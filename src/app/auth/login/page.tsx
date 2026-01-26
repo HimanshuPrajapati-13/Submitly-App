@@ -5,9 +5,11 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Zap, Mail, Lock, ArrowRight, Loader2, Github } from 'lucide-react';
+import { Zap, Mail, Lock, ArrowRight, Loader2, Github, UserPlus } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function LoginPage() {
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -17,8 +19,16 @@ export default function LoginPage() {
 
   const supabase = createClient();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (mode === 'signin') {
+      await handleLogin();
+    } else {
+      await handleSignUp();
+    }
+  };
+
+  const handleLogin = async () => {
     setIsLoading(true);
     setError(null);
 
@@ -143,9 +153,40 @@ export default function LoginPage() {
 
         {/* Card with glass effect */}
         <div className="glass rounded-2xl p-8 animate-fade-in-up shadow-2xl shadow-violet-500/10">
-          <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
+          
+          {/* Toggle Buttons */}
+          <div className="flex p-1 bg-slate-900/50 rounded-xl mb-6 border border-white/5">
+            <button
+              onClick={() => { setMode('signin'); setError(null); }}
+              className={cn(
+                "flex-1 text-sm font-medium py-2 rounded-lg transition-all duration-300",
+                mode === 'signin' 
+                  ? "bg-violet-600 text-white shadow-lg shadow-violet-500/20" 
+                  : "text-slate-400 hover:text-white hover:bg-white/5"
+              )}
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => { setMode('signup'); setError(null); }}
+              className={cn(
+                "flex-1 text-sm font-medium py-2 rounded-lg transition-all duration-300",
+                mode === 'signup' 
+                  ? "bg-violet-600 text-white shadow-lg shadow-violet-500/20" 
+                  : "text-slate-400 hover:text-white hover:bg-white/5"
+              )}
+            >
+              Sign Up
+            </button>
+          </div>
+
+          <h1 className="text-2xl font-bold text-white mb-2">
+            {mode === 'signin' ? 'Welcome back' : 'Create an account'}
+          </h1>
           <p className="text-slate-400 mb-6">
-            Sign in to manage your applications
+            {mode === 'signin' 
+              ? 'Sign in to manage your applications' 
+              : 'Start tracking your applications today'}
           </p>
 
           {error && (
@@ -172,7 +213,7 @@ export default function LoginPage() {
             ) : (
               <>
                 <Github className="h-5 w-5 mr-2" />
-                Continue with GitHub
+                {mode === 'signin' ? 'Continue with GitHub' : 'Sign up with GitHub'}
               </>
             )}
           </Button>
@@ -186,7 +227,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-slate-300">Email</Label>
               <div className="relative group">
@@ -227,27 +268,19 @@ export default function LoginPage() {
             >
               {isLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
+              ) : mode === 'signin' ? (
                 <>
                   Sign In
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </>
+              ) : (
+                <>
+                  Create Account
+                  <UserPlus className="h-4 w-4 ml-2" />
+                </>
               )}
             </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-slate-400 text-sm">
-              Don&apos;t have an account?{' '}
-              <button
-                onClick={handleSignUp}
-                disabled={isLoading}
-                className="text-violet-400 hover:text-violet-300 font-medium transition-colors hover:underline"
-              >
-                Sign up
-              </button>
-            </p>
-          </div>
         </div>
 
         <p className="text-center text-slate-500 text-sm mt-6 animate-fade-in">
