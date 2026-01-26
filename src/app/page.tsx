@@ -55,8 +55,8 @@ function DashboardContent() {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="relative">
-                <div className="h-12 w-12 rounded-full border-2 border-violet-500/30 animate-ping absolute inset-0" />
-                <div className="h-12 w-12 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
+                <div className="h-12 w-12 rounded-full border-2 border-blue-500/30 animate-ping absolute inset-0" />
+                <div className="h-12 w-12 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
               </div>
               <p className="text-slate-400 mt-4 animate-pulse">Loading your applications...</p>
             </div>
@@ -85,10 +85,10 @@ function DashboardContent() {
 
       {/* Floating Action Button */}
       <div className="fixed bottom-6 right-6 z-50">
-        <div className="absolute inset-0 h-14 w-14 rounded-full bg-violet-500 animate-ping opacity-20" />
+        <div className="absolute inset-0 h-14 w-14 rounded-full bg-blue-500 animate-ping opacity-20" />
         <Button
           onClick={() => handleNewApplication()}
-          className="relative h-14 w-14 rounded-full shadow-lg shadow-violet-500/30 bg-linear-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 hover:scale-110 hover:shadow-xl hover:shadow-violet-500/40 transition-all duration-300"
+          className="relative h-14 w-14 rounded-full shadow-lg shadow-blue-500/30 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:scale-110 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 flex items-center justify-center"
           size="icon"
         >
           <Plus className="h-6 w-6 text-white" />
@@ -114,7 +114,7 @@ function LoadingSkeleton() {
       {/* Loading indicator */}
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 text-violet-500 animate-spin" />
+          <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
         </div>
       </main>
     </div>
@@ -123,16 +123,14 @@ function LoadingSkeleton() {
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-linear-to-b from-slate-950 via-slate-950 to-slate-900 overflow-hidden">
+    <div className="min-h-screen bg-slate-950 overflow-hidden">
       {/* Animated Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-1/4 -left-40 w-80 h-80 bg-fuchsia-500/15 rounded-full blur-3xl animate-float-delayed" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-1/2 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl animate-float-delayed" />
+        <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[100px] animate-float-slow" />
+        <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] bg-indigo-900/20 rounded-full blur-[80px] animate-float-delayed" />
         
         {/* Subtle grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.02)_1px,transparent_1px)] bg-size-[64px_64px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-size-[64px_64px]" />
       </div>
       
       <HydrationSafe fallback={<LoadingSkeleton />}>
