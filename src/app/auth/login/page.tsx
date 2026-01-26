@@ -148,7 +148,7 @@ export default function LoginPage() {
         <div className="flex flex-col items-center gap-4 mb-8 animate-fade-in-down">
           <div className="relative group">
             <div className="absolute inset-0 bg-blue-500/30 rounded-3xl blur-xl group-hover:bg-blue-400/40 transition-all duration-500" />
-            <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl clay-card bg-gradient-to-br from-slate-800 to-slate-900 border-white/10 group-hover:-translate-y-1 transition-transform duration-500">
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl clay-card bg-linear-to-br from-slate-800 to-slate-900 border-white/10 group-hover:-translate-y-1 transition-transform duration-500">
               <Zap className="h-10 w-10 text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
             </div>
           </div>
