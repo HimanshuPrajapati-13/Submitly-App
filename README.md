@@ -50,7 +50,7 @@ Deploy to Netlify or Vercel with one click. Make sure to add the environment var
 
 **Himanshu Prajapati**
 - GitHub: [@HimanshuPrajapati-13](https://github.com/HimanshuPrajapati-13)
-- LinkedIn: [Himanshu Prajapati](https://www.linkedin.com/in/himanshu-prajapati-728aa0201/)
+- LinkedIn: [Himanshu Prajapati](www.linkedin.com/in/himanshu-prajapati-728aa0201)
 
 ## License
 
