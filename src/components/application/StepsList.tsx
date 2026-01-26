@@ -180,7 +180,7 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                   'flex-shrink-0 mt-0.5 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all',
                   step.completed
                     ? 'bg-emerald-500 border-emerald-500'
-                    : 'border-slate-500 hover:border-violet-500'
+                    : 'border-slate-500 hover:border-blue-500'
                 )}
               >
                 {step.completed && <Check className="h-3 w-3 text-white" />}
@@ -225,7 +225,7 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                           </span>
                         )}
                         {step.files && step.files.length > 0 && (
-                          <span className="text-xs text-violet-400 flex items-center gap-1">
+                          <span className="text-xs text-blue-400 flex items-center gap-1">
                             <FileText className="h-3 w-3" />
                             {step.files.length} file{step.files.length > 1 ? 's' : ''}
                           </span>
@@ -281,7 +281,7 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                             <Button
                               size="sm"
                               onClick={() => handleSaveNote(step.id, editingNote.note)}
-                              className="bg-violet-600 hover:bg-violet-500"
+                              className="bg-blue-600 hover:bg-blue-500"
                             >
                               Save
                             </Button>
@@ -404,12 +404,12 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                               key={file.id}
                               className="flex items-center gap-2 p-2 bg-slate-800/50 rounded-lg group/file"
                             >
-                              <FileText className="h-4 w-4 text-violet-400 flex-shrink-0" />
+                              <FileText className="h-4 w-4 text-blue-400 flex-shrink-0" />
                               <div className="flex-1 min-w-0">
                                 <a
                                   href={file.dataUrl}
                                   download={file.fileName}
-                                  className="text-sm text-violet-400 hover:text-violet-300 truncate block"
+                                  className="text-sm text-blue-400 hover:text-blue-300 truncate block"
                                 >
                                   {file.fileName}
                                 </a>
@@ -434,7 +434,7 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                           setUploadingFor(step.id);
                           fileInputRef.current?.click();
                         }}
-                        className="text-sm text-violet-400 hover:text-violet-300 flex items-center gap-1"
+                        className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1"
                       >
                         <Upload className="h-3 w-3" />
                         Upload PDF
@@ -508,7 +508,7 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
               size="sm"
               onClick={handleAddStep}
               disabled={!newStepTitle.trim()}
-              className="bg-violet-600 hover:bg-violet-500"
+              className="bg-blue-600 hover:bg-blue-500"
             >
               Add Step
             </Button>

@@ -39,38 +39,42 @@ export default function AboutAppPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-slate-950 to-slate-900">
+    <div className="min-h-screen bg-slate-950">
       {/* Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-violet-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 -left-40 w-80 h-80 bg-fuchsia-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[100px] animate-float-slow" />
+        <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] bg-indigo-900/20 rounded-full blur-[80px] animate-float-delayed" />
       </div>
 
       <div className="container mx-auto px-4 py-8 relative z-10 max-w-3xl">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link href="/">
-            <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
+            <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white rounded-full hover:bg-white/5">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold text-white">About Submitly</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">About Submitly</h1>
         </div>
 
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <div className="flex justify-center mb-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-violet-500 to-fuchsia-500">
-              <Zap className="h-8 w-8 text-white" />
+          <div className="flex justify-center mb-6">
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-600 shadow-xl shadow-blue-500/20">
+              <Zap className="h-10 w-10 text-white" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-white mb-2">
-            Submitly <span className="text-violet-400">Submit On Time</span>
+          <h2 className="text-4xl font-bold text-white mb-3 tracking-tight">
+            Submitly <span className="text-blue-500">Submit On Time</span>
           </h2>
-          <p className="text-slate-400 text-lg max-w-lg mx-auto">
+          <p className="text-slate-400 text-lg max-w-lg mx-auto leading-relaxed">
             The ultimate application tracker. Never miss a deadline, always know your next action.
           </p>
-          <p className="text-violet-400 font-medium mt-4">Version 1.0.0</p>
+          <div className="mt-6 flex justify-center">
+            <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-sm font-medium border border-blue-500/20">
+              Version 1.0.0
+            </span>
+          </div>
         </div>
 
         {/* Features */}
@@ -78,37 +82,39 @@ export default function AboutAppPage() {
           {features.map((feature) => (
             <div 
               key={feature.title}
-              className="bg-slate-900/50 border border-white/10 rounded-xl p-5 backdrop-blur-xl"
+              className="clay-card border-0 p-6 hover:translate-y-[-2px] transition-transform duration-300"
             >
-              <feature.icon className="h-8 w-8 text-violet-400 mb-3" />
-              <h3 className="text-white font-semibold mb-1">{feature.title}</h3>
-              <p className="text-slate-400 text-sm">{feature.description}</p>
+              <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 text-blue-400">
+                <feature.icon className="h-6 w-6" />
+              </div>
+              <h3 className="text-white font-bold mb-2 text-lg">{feature.title}</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">{feature.description}</p>
             </div>
           ))}
         </div>
 
         {/* How It Works */}
-        <div className="bg-slate-900/50 border border-white/10 rounded-xl p-6 backdrop-blur-xl mb-8">
-          <h3 className="text-lg font-semibold text-white mb-4">How It Works</h3>
-          <ol className="space-y-4">
+        <div className="clay-card border-0 p-8 mb-12">
+          <h3 className="text-xl font-bold text-white mb-6">How It Works</h3>
+          <ol className="space-y-6">
             <li className="flex gap-4">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500/20 text-violet-400 font-bold text-sm shrink-0">1</span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white font-bold text-sm shrink-0 shadow-lg shadow-blue-500/30">1</span>
               <div>
-                <p className="text-white font-medium">Create an Application</p>
+                <p className="text-white font-bold text-lg mb-1">Create an Application</p>
                 <p className="text-slate-400 text-sm">Add your job, college, or scholarship application with a deadline.</p>
               </div>
             </li>
             <li className="flex gap-4">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500/20 text-violet-400 font-bold text-sm shrink-0">2</span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white font-bold text-sm shrink-0 shadow-lg shadow-blue-500/30">2</span>
               <div>
-                <p className="text-white font-medium">Track Your Steps</p>
+                <p className="text-white font-bold text-lg mb-1">Track Your Steps</p>
                 <p className="text-slate-400 text-sm">Break down the application into steps. Check them off as you complete them.</p>
               </div>
             </li>
             <li className="flex gap-4">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500/20 text-violet-400 font-bold text-sm shrink-0">3</span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white font-bold text-sm shrink-0 shadow-lg shadow-blue-500/30">3</span>
               <div>
-                <p className="text-white font-medium">Submit On Time</p>
+                <p className="text-white font-bold text-lg mb-1">Submit On Time</p>
                 <p className="text-slate-400 text-sm">The app shows you what to do next. Never miss a deadline again!</p>
               </div>
             </li>
@@ -116,7 +122,7 @@ export default function AboutAppPage() {
         </div>
 
         {/* Footer */}
-        <div className="text-center text-slate-500 text-sm">
+        <div className="text-center text-slate-500 text-sm pb-8">
           <p>Built with ❤️ using Next.js, Supabase, and Tailwind CSS</p>
           <p className="mt-2">© 2026 Submitly. All rights reserved.</p>
         </div>

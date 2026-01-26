@@ -200,7 +200,7 @@ export function NewApplicationModal({
                   className={cn(
                     'flex-1 p-4 rounded-lg border text-left transition-all',
                     useTemplate
-                      ? 'border-violet-500 bg-violet-500/10 text-white'
+                      ? 'border-blue-500 bg-blue-500/10 text-white'
                       : 'border-white/10 bg-slate-900 text-slate-400 hover:border-white/20'
                   )}
                 >
@@ -216,7 +216,7 @@ export function NewApplicationModal({
                   className={cn(
                     'flex-1 p-4 rounded-lg border text-left transition-all',
                     !useTemplate
-                      ? 'border-violet-500 bg-violet-500/10 text-white'
+                      ? 'border-blue-500 bg-blue-500/10 text-white'
                       : 'border-white/10 bg-slate-900 text-slate-400 hover:border-white/20'
                   )}
                 >
@@ -235,7 +235,7 @@ export function NewApplicationModal({
               </Button>
               <Button 
                 onClick={handleNext}
-                className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white"
+                className="clay-button"
               >
                 {useTemplate ? 'Next →' : 'Create Application'}
               </Button>
@@ -255,14 +255,14 @@ export function NewApplicationModal({
                   className={cn(
                     'w-full p-4 rounded-lg border text-left transition-all',
                     selectedTemplateId === template.id
-                      ? 'border-violet-500 bg-violet-500/10'
+                      ? 'border-blue-500 bg-blue-500/10'
                       : 'border-white/10 bg-slate-900 hover:border-white/20'
                   )}
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-medium text-white">{template.name}</span>
                     {selectedTemplateId === template.id && (
-                      <CheckCircle2 className="h-5 w-5 text-violet-400" />
+                      <CheckCircle2 className="h-5 w-5 text-blue-400" />
                     )}
                   </div>
                   <p className="text-sm text-slate-400">{template.description}</p>
@@ -285,7 +285,7 @@ export function NewApplicationModal({
               <Button 
                 onClick={() => handleCreate(selectedTemplateId)}
                 disabled={!selectedTemplateId}
-                className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white disabled:opacity-50"
+                className="clay-button disabled:opacity-50"
               >
                 Create with Template →
               </Button>

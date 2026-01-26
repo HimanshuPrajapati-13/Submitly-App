@@ -19,7 +19,7 @@ function LoadingSkeleton() {
       <div className="sticky top-0 z-50 w-full border-b border-white/10 bg-slate-950/80 backdrop-blur-xl h-32" />
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 text-violet-500 animate-spin" />
+          <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
         </div>
       </main>
     </div>
@@ -45,8 +45,8 @@ function ApplicationDetailContent({ id }: { id: string }) {
     <div className="min-h-screen bg-linear-to-b from-slate-950 via-slate-950 to-slate-900">
       {/* Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/4 -left-40 w-80 h-80 bg-fuchsia-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[100px] animate-float-slow" />
+        <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] bg-indigo-900/20 rounded-full blur-[80px] animate-float-delayed" />
       </div>
       
       <ApplicationHeader application={application} />

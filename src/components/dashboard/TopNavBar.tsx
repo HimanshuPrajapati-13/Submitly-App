@@ -60,7 +60,7 @@ export function TopNavBar({ onNewApplication }: TopNavBarProps) {
           </div>
           <div className="flex flex-col">
             <span className="text-lg font-bold text-white leading-tight tracking-tight">Submitly</span>
-            <span className="text-[10px] text-blue-300 font-bold uppercase tracking-widest leading-tight">Mission Control</span>
+            <span className="text-[10px] text-blue-300 font-bold uppercase tracking-widest leading-tight">Submit on Time</span>
           </div>
         </div>
 

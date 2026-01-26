@@ -88,7 +88,7 @@ function DashboardContent() {
         <div className="absolute inset-0 h-14 w-14 rounded-full bg-violet-500 animate-ping opacity-20" />
         <Button
           onClick={() => handleNewApplication()}
-          className="relative h-14 w-14 rounded-full shadow-lg shadow-violet-500/30 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 hover:scale-110 hover:shadow-xl hover:shadow-violet-500/40 transition-all duration-300"
+          className="relative h-14 w-14 rounded-full shadow-lg shadow-violet-500/30 bg-linear-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 hover:scale-110 hover:shadow-xl hover:shadow-violet-500/40 transition-all duration-300"
           size="icon"
         >
           <Plus className="h-6 w-6 text-white" />
@@ -123,7 +123,7 @@ function LoadingSkeleton() {
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 overflow-hidden">
+    <div className="min-h-screen bg-linear-to-b from-slate-950 via-slate-950 to-slate-900 overflow-hidden">
       {/* Animated Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl animate-float" />
@@ -132,7 +132,7 @@ export default function Dashboard() {
         <div className="absolute top-1/2 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl animate-float-delayed" />
         
         {/* Subtle grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.02)_1px,transparent_1px)] bg-size-[64px_64px]" />
       </div>
       
       <HydrationSafe fallback={<LoadingSkeleton />}>

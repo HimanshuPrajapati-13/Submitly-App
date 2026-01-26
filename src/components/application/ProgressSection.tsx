@@ -14,10 +14,10 @@ export function ProgressSection({ application }: ProgressSectionProps) {
   const completedSteps = steps.filter(s => s.completed).length;
   
   return (
-    <div className="bg-gradient-to-br from-violet-500/10 to-fuchsia-500/10 border border-violet-500/20 rounded-xl p-6">
+    <div className="clay-card border-0 p-6">
       {/* Next Action */}
       <div className="mb-4">
-        <h3 className="text-xs font-semibold text-violet-400 uppercase tracking-wider mb-2">
+        <h3 className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">
           Next Action
         </h3>
         
@@ -35,7 +35,7 @@ export function ProgressSection({ application }: ProgressSectionProps) {
           </div>
         ) : (
           <div className="flex items-center gap-2 text-white">
-            <span className="text-violet-400 text-xl">→</span>
+            <span className="text-blue-400 text-xl">→</span>
             <span className="text-lg font-semibold">{nextAction.step}</span>
             {nextAction.estimatedMinutes && (
               <span className="text-slate-400 flex items-center gap-1">
@@ -57,7 +57,8 @@ export function ProgressSection({ application }: ProgressSectionProps) {
         </div>
         <Progress 
           value={progress} 
-          className="h-3 bg-slate-800"
+          className="h-3 bg-slate-800/50"
+          indicatorClassName={progress === 100 ? "bg-emerald-500" : "bg-blue-500"}
         />
       </div>
     </div>

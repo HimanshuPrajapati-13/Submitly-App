@@ -131,7 +131,7 @@ export const statusLabels: Record<Status, string> = {
 
 export const categoryColors: Record<Category, string> = {
   JOB: 'bg-blue-500',
-  COLLEGE: 'bg-purple-500',
+  COLLEGE: 'bg-indigo-500',
   EXAM: 'bg-amber-500',
   SCHOLARSHIP: 'bg-emerald-500',
   OTHER: 'bg-slate-500',
