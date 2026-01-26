@@ -154,7 +154,7 @@ export default function LoginPage() {
           </div>
           <div className="text-center">
             <h1 className="text-3xl font-bold text-white tracking-tight drop-shadow-md">Submitly</h1>
-            <p className="text-blue-300/80 font-medium tracking-wide text-sm uppercase letter-spacing-2">Mission Control</p>
+            <p className="text-blue-300/80 font-medium tracking-wide text-sm uppercase letter-spacing-2">Submit On Time</p>
           </div>
         </div>
 
@@ -197,12 +197,12 @@ export default function LoginPage() {
 
           <div className="mb-6 text-center">
             <h2 className="text-xl font-semibold text-white/90 mb-1">
-              {mode === 'signin' ? 'Identify Yourself' : 'New Recruit'}
+              {mode === 'signin' ? 'Identify Yourself' : 'New Member'}
             </h2>
             <p className="text-slate-400 text-sm">
               {mode === 'signin' 
-                ? 'Access your command center' 
-                : 'Initialize your mission data protocols'}
+                ? 'Access your world of applications' 
+                : 'Initialize your mission to submit on time'}
             </p>
           </div>
 
@@ -227,7 +227,7 @@ export default function LoginPage() {
             disabled={isGithubLoading || isLoading}
             className="w-full bg-slate-800/80 hover:bg-slate-700/80 text-white h-12 rounded-2xl mb-6 border border-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-lg hover:shadow-blue-900/20 flex items-center justify-center gap-3 group relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
             {isGithubLoading ? (
               <Loader2 className="h-5 w-5 animate-spin text-blue-400" />
             ) : (
@@ -265,7 +265,7 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-400 text-xs font-bold uppercase tracking-wider pl-1">Passkey</Label>
+              <Label htmlFor="password" className="text-slate-400 text-xs font-bold uppercase tracking-wider pl-1">Password</Label>
               <div className="relative group">
                 {mode === 'signin' ? (
                   <Fingerprint className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 transition-colors group-focus-within:text-blue-400" />
@@ -310,7 +310,7 @@ export default function LoginPage() {
         <div className="mt-8 flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity duration-300">
           <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse" />
           <p className="text-slate-500 text-xs font-mono tracking-widest uppercase">
-            System Online • Secure Connection
+            Your purpose-built application tracker for managing high-stakes deadlines.
           </p>
         </div>
       </div>

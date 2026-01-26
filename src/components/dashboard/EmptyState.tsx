@@ -71,7 +71,7 @@ export function EmptyState({ filter, onNewApplication }: EmptyStateProps) {
       {state.showAction && (
         <Button
           onClick={onNewApplication}
-          className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white"
+          className="clay-button px-6"
         >
           + {state.action}
         </Button>
@@ -80,7 +80,7 @@ export function EmptyState({ filter, onNewApplication }: EmptyStateProps) {
       {filter !== 'all' && (
         <button
           onClick={() => setActiveFilter('all')}
-          className="mt-4 text-sm text-violet-400 hover:text-violet-300 transition-colors"
+          className="mt-4 text-sm text-blue-400 hover:text-blue-300 transition-colors font-medium"
         >
           Clear filter
         </button>

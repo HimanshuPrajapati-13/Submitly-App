@@ -48,7 +48,7 @@ export function FilterTabs() {
             <TabsTrigger
               key={tab.key}
               value={tab.key}
-              className="data-[state=active]:bg-violet-600 data-[state=active]:text-white text-slate-400 px-4 py-2 rounded-md"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-400 px-4 py-2 rounded-md transition-all duration-300"
             >
               {tab.label}
               <span className="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-xs">

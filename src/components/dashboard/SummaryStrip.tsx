@@ -65,7 +65,7 @@ export function SummaryStrip() {
             badge.bgColor,
             badge.borderColor,
             badge.color,
-            activeFilter === badge.key && 'ring-2 ring-white/20'
+            activeFilter === badge.key && 'ring-2 ring-blue-500 bg-white/5'
           )}
         >
           <span>{badge.icon}</span>

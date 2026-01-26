@@ -48,28 +48,31 @@ export function TopNavBar({ onNewApplication }: TopNavBarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0b1220]/80 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <div className="flex items-center gap-2.5 group cursor-pointer" onClick={() => router.push('/')}>
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/20 transition-all duration-300 group-hover:shadow-violet-500/40 group-hover:scale-105">
-            <Zap className="h-5 w-5 text-white" />
+        <div className="flex items-center gap-3 group cursor-pointer" onClick={() => router.push('/')}>
+          <div className="relative">
+            <div className="absolute inset-0 bg-blue-500/20 rounded-lg blur-md group-hover:bg-blue-400/30 transition-all duration-300" />
+            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/20 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-blue-500/40">
+              <Zap className="h-5 w-5 text-white" />
+            </div>
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-bold text-white leading-tight">Submitly</span>
-            <span className="text-xs text-violet-400 font-medium leading-tight">Submit On Time</span>
+            <span className="text-lg font-bold text-white leading-tight tracking-tight">Submitly</span>
+            <span className="text-[10px] text-blue-300 font-bold uppercase tracking-widest leading-tight">Mission Control</span>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div className="relative mx-4 flex-1 max-w-md">
+        <div className="relative mx-4 flex-1 max-w-md hidden md:block">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <Input
             type="text"
             placeholder="Search applications... (⌘K)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-900/50 border-white/10 pl-10 text-white placeholder:text-slate-500 focus:border-violet-500 focus:ring-violet-500/20"
+            className="w-full input-glass pl-10 h-10 text-sm focus:border-blue-500/50"
           />
         </div>
 
@@ -78,19 +81,19 @@ export function TopNavBar({ onNewApplication }: TopNavBarProps) {
           {/* Templates Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/10">
+              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/5 rounded-full">
                 <LayoutTemplate className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-slate-900 border-white/10">
-              <div className="px-2 py-1.5 text-xs font-semibold text-slate-400">
-                Quick Create from Template
+            <DropdownMenuContent align="end" className="w-56 bg-[#0b1220] border-white/10 backdrop-blur-xl">
+              <div className="px-2 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                Quick Create
               </div>
               {TEMPLATES.map((template) => (
                 <DropdownMenuItem
                   key={template.id}
                   onClick={() => onNewApplication(template.id)}
-                  className="text-slate-200 focus:bg-white/10 focus:text-white cursor-pointer"
+                  className="text-slate-200 focus:bg-blue-600/20 focus:text-white cursor-pointer rounded-lg my-1"
                 >
                   <div>
                     <div className="font-medium">{template.name}</div>
@@ -104,28 +107,28 @@ export function TopNavBar({ onNewApplication }: TopNavBarProps) {
           </DropdownMenu>
 
           {/* Notifications */}
-          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/10">
+          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/10 rounded-full">
             <Bell className="h-5 w-5" />
           </Button>
 
           {/* Profile */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/10">
+              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/5 rounded-full">
                 <User className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 bg-slate-900 border-white/10">
+            <DropdownMenuContent align="end" className="w-48 bg-[#0b1220] border-white/10 backdrop-blur-xl">
               <DropdownMenuItem 
                 onClick={() => router.push('/settings')}
-                className="text-slate-200 focus:bg-white/10 cursor-pointer"
+                className="text-slate-200 focus:bg-blue-600/20 focus:text-white cursor-pointer rounded-lg my-1"
               >
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={handleExportData}
-                className="text-slate-200 focus:bg-white/10 cursor-pointer"
+                className="text-slate-200 focus:bg-blue-600/20 focus:text-white cursor-pointer rounded-lg my-1"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Export Data
@@ -133,14 +136,14 @@ export function TopNavBar({ onNewApplication }: TopNavBarProps) {
               <DropdownMenuSeparator className="bg-white/10" />
               <DropdownMenuItem 
                 onClick={() => router.push('/about')}
-                className="text-slate-200 focus:bg-white/10 cursor-pointer"
+                className="text-slate-200 focus:bg-blue-600/20 focus:text-white cursor-pointer rounded-lg my-1"
               >
                 <Zap className="h-4 w-4 mr-2" />
                 About App
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => router.push('/developer')}
-                className="text-slate-200 focus:bg-white/10 cursor-pointer"
+                className="text-slate-200 focus:bg-blue-600/20 focus:text-white cursor-pointer rounded-lg my-1"
               >
                 <User className="h-4 w-4 mr-2" />
                 About Developer
@@ -148,7 +151,7 @@ export function TopNavBar({ onNewApplication }: TopNavBarProps) {
               <DropdownMenuSeparator className="bg-white/10" />
               <DropdownMenuItem 
                 onClick={handleSignOut}
-                className="text-red-400 focus:bg-red-500/10 focus:text-red-400 cursor-pointer"
+                className="text-red-400 focus:bg-red-500/10 focus:text-red-300 cursor-pointer rounded-lg my-1"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
