@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Zap, Mail, Lock, ArrowRight, Loader2, Github, UserPlus } from 'lucide-react';
+import { Zap, Mail, Lock, ArrowRight, Loader2, Github, UserPlus, Fingerprint } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function LoginPage() {
@@ -128,41 +128,48 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-slate-950 via-slate-950 to-slate-900 flex items-center justify-center p-4 overflow-hidden">
-      {/* Animated Background decoration */}
+    <div className="min-h-screen w-full flex items-center justify-center p-4 overflow-hidden relative">
+      
+      {/* ATMOSPHERIC BACKGROUND ELEMENTS */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-1/4 -left-40 w-80 h-80 bg-fuchsia-500/15 rounded-full blur-3xl animate-float-delayed" />
-        <div className="absolute bottom-20 right-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-float" />
+        {/* Deep space horizon glow - Amber/Warm */}
+        <div className="absolute bottom-[-20%] left-[20%] right-[20%] h-[50vh] bg-amber-500/5 rounded-[100%] blur-[120px] opacity-30 animate-pulse-soft" />
         
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
+        {/* Cool blue atmospheric bloom */}
+        <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[100px] animate-float-slow" />
+        <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] bg-indigo-900/20 rounded-full blur-[80px] animate-float-delayed" />
+        
+        {/* Subtle star field grain overlay could go here if needed */}
       </div>
 
-      <div className="w-full max-w-md relative z-10">
-        {/* Logo with animation */}
-        <div className="flex items-center justify-center gap-3 mb-8 animate-fade-in-down">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/30 animate-pulse-glow">
-            <Zap className="h-7 w-7 text-white" />
+      <div className="w-full max-w-md relative z-10 flex flex-col items-center">
+        
+        {/* MISSION CONTROL LOGO */}
+        <div className="flex flex-col items-center gap-4 mb-8 animate-fade-in-down">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-blue-500/30 rounded-3xl blur-xl group-hover:bg-blue-400/40 transition-all duration-500" />
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl clay-card bg-gradient-to-br from-slate-800 to-slate-900 border-white/10 group-hover:-translate-y-1 transition-transform duration-500">
+              <Zap className="h-10 w-10 text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className="text-2xl font-bold text-white">Submitly</span>
-            <span className="text-sm text-violet-400 font-medium">Submit On Time</span>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-white tracking-tight drop-shadow-md">Submitly</h1>
+            <p className="text-blue-300/80 font-medium tracking-wide text-sm uppercase letter-spacing-2">Mission Control</p>
           </div>
         </div>
 
-        {/* Card with glass effect */}
-        <div className="glass rounded-2xl p-8 animate-fade-in-up shadow-2xl shadow-violet-500/10">
+        {/* CLAY CARD CONTAINER */}
+        <div className="clay-card w-full p-8 animate-fade-in-up">
           
-          {/* Toggle Buttons */}
-          <div className="flex p-1 bg-slate-900/50 rounded-xl mb-6 border border-white/5">
+          {/* MODE TOGGLE - PILL SHAPE */}
+          <div className="flex p-1.5 bg-slate-950/40 rounded-full mb-8 border border-white/5 relative overflow-hidden backdrop-blur-md shadow-inner">
             <button
               onClick={() => { setMode('signin'); setError(null); }}
               className={cn(
-                "flex-1 text-sm font-medium py-2 rounded-lg transition-all duration-300",
+                "flex-1 text-sm font-semibold py-2.5 rounded-full transition-all duration-300 relative z-10",
                 mode === 'signin' 
-                  ? "bg-violet-600 text-white shadow-lg shadow-violet-500/20" 
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
+                  ? "text-white text-shadow-sm" 
+                  : "text-slate-500 hover:text-slate-300"
               )}
             >
               Sign In
@@ -170,91 +177,108 @@ export default function LoginPage() {
             <button
               onClick={() => { setMode('signup'); setError(null); }}
               className={cn(
-                "flex-1 text-sm font-medium py-2 rounded-lg transition-all duration-300",
+                "flex-1 text-sm font-semibold py-2.5 rounded-full transition-all duration-300 relative z-10",
                 mode === 'signup' 
-                  ? "bg-violet-600 text-white shadow-lg shadow-violet-500/20" 
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
+                  ? "text-white text-shadow-sm" 
+                  : "text-slate-500 hover:text-slate-300"
               )}
             >
               Sign Up
             </button>
+            
+            {/* Sliding Background for Toggle */}
+            <div 
+              className={cn(
+                "absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-blue-600 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all duration-300 ease-out",
+                mode === 'signin' ? "left-1.5" : "left-[calc(50%+3px)]"
+              )}
+            />
           </div>
 
-          <h1 className="text-2xl font-bold text-white mb-2">
-            {mode === 'signin' ? 'Welcome back' : 'Create an account'}
-          </h1>
-          <p className="text-slate-400 mb-6">
-            {mode === 'signin' 
-              ? 'Sign in to manage your applications' 
-              : 'Start tracking your applications today'}
-          </p>
+          <div className="mb-6 text-center">
+            <h2 className="text-xl font-semibold text-white/90 mb-1">
+              {mode === 'signin' ? 'Identify Yourself' : 'New Recruit'}
+            </h2>
+            <p className="text-slate-400 text-sm">
+              {mode === 'signin' 
+                ? 'Access your command center' 
+                : 'Initialize your mission data protocols'}
+            </p>
+          </div>
 
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-4 text-sm animate-fade-in">
+            <div className="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-2xl mb-6 text-sm flex items-center gap-3 animate-fade-in shadow-inner">
+              <div className="h-2 w-2 rounded-full bg-red-400 animate-pulse" />
               {error}
             </div>
           )}
 
           {message && (
-            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-lg mb-4 text-sm animate-fade-in">
+            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-200 px-4 py-3 rounded-2xl mb-6 text-sm flex items-center gap-3 animate-fade-in shadow-inner">
+              <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               {message}
             </div>
           )}
 
-          {/* GitHub Login Button */}
-          <Button
+          {/* SOCIAL LOGIN */}
+          <button
             type="button"
             onClick={handleGithubLogin}
             disabled={isGithubLoading || isLoading}
-            className="w-full bg-slate-800 hover:bg-slate-700 text-white h-12 mb-4 border border-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-lg hover:shadow-slate-500/10"
+            className="w-full bg-slate-800/80 hover:bg-slate-700/80 text-white h-12 rounded-2xl mb-6 border border-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-lg hover:shadow-blue-900/20 flex items-center justify-center gap-3 group relative overflow-hidden"
           >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
             {isGithubLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin text-blue-400" />
             ) : (
               <>
-                <Github className="h-5 w-5 mr-2" />
-                {mode === 'signin' ? 'Continue with GitHub' : 'Sign up with GitHub'}
+                <Github className="h-5 w-5 text-white/90" />
+                <span className="font-medium tracking-wide">Continue with GitHub</span>
               </>
             )}
-          </Button>
+          </button>
 
-          <div className="relative my-6">
+          <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10"></div>
+              <div className="w-full border-t border-white/5"></div>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-slate-900/80 px-3 text-slate-500">or continue with email</span>
+            <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-bold">
+              <span className="bg-[#0b1220]/80 backdrop-blur px-3 text-slate-600">Secure Access</span>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-300">Email</Label>
+              <Label htmlFor="email" className="text-slate-400 text-xs font-bold uppercase tracking-wider pl-1">Email Coordinates</Label>
               <div className="relative group">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 transition-colors group-focus-within:text-violet-400" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 transition-colors group-focus-within:text-blue-400" />
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="bg-slate-800/80 border-white/10 text-white pl-10 placeholder:text-slate-500 h-11 transition-all focus:border-violet-500 focus:ring-violet-500/20 focus:bg-slate-800"
+                  placeholder="name@domain.com"
+                  className="input-glass pl-12 h-12 border-white/5 focus:border-blue-500/50"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-300">Password</Label>
+              <Label htmlFor="password" className="text-slate-400 text-xs font-bold uppercase tracking-wider pl-1">Passkey</Label>
               <div className="relative group">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 transition-colors group-focus-within:text-violet-400" />
+                {mode === 'signin' ? (
+                  <Fingerprint className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 transition-colors group-focus-within:text-blue-400" />
+                ) : (
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 transition-colors group-focus-within:text-blue-400" />
+                )}
                 <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="bg-slate-800/80 border-white/10 text-white pl-10 placeholder:text-slate-500 h-11 transition-all focus:border-violet-500 focus:ring-violet-500/20 focus:bg-slate-800"
+                  className="input-glass pl-12 h-12 border-white/5 focus:border-blue-500/50"
                   required
                   minLength={6}
                 />
@@ -264,28 +288,31 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={isLoading || isGithubLoading}
-              className="w-full bg-linear-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white h-12 font-medium transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/25 hover:scale-[1.02]"
+              className="w-full clay-button h-14 mt-4 font-bold tracking-wide text-lg flex items-center justify-center gap-2"
             >
               {isLoading ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <Loader2 className="h-6 w-6 animate-spin text-white/80" />
               ) : mode === 'signin' ? (
                 <>
-                  Sign In
-                  <ArrowRight className="h-4 w-4 ml-2" />
+                  <span className="drop-shadow-sm">Initialize Session</span>
+                  <ArrowRight className="h-5 w-5 ml-1 animate-pulse" />
                 </>
               ) : (
                 <>
-                  Create Account
-                  <UserPlus className="h-4 w-4 ml-2" />
+                  <span className="drop-shadow-sm">Register Identity</span>
+                  <UserPlus className="h-5 w-5 ml-1" />
                 </>
               )}
             </Button>
           </form>
         </div>
 
-        <p className="text-center text-slate-500 text-sm mt-6 animate-fade-in">
-          Never miss a deadline again <span className="inline-block animate-bounce">⚡</span>
-        </p>
+        <div className="mt-8 flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity duration-300">
+          <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse" />
+          <p className="text-slate-500 text-xs font-mono tracking-widest uppercase">
+            System Online • Secure Connection
+          </p>
+        </div>
       </div>
     </div>
   );
