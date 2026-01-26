@@ -129,7 +129,7 @@ export default function Dashboard() {
         {/* Main Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-screen"
-          style={{ backgroundImage: 'url(/dashboard-bg-2.png)' }}
+          style={{ backgroundImage: 'url(/ashboard-bg-2.png)' }}
         />
         
         {/* Overlays for depth */}
