@@ -126,8 +126,18 @@ export default function Dashboard() {
     <div className="min-h-screen bg-slate-950 overflow-hidden">
       {/* Animated Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[100px] animate-float-slow" />
-        <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] bg-indigo-900/20 rounded-full blur-[80px] animate-float-delayed" />
+        {/* Main Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-screen"
+          style={{ backgroundImage: 'url(/dashboard-bg.png)' }}
+        />
+        
+        {/* Overlays for depth */}
+        <div className="absolute inset-0 bg-linear-to-b from-slate-950 via-slate-950/80 to-slate-900/90" />
+        
+        {/* Subtle decorative blobs for extra depth */}
+        <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[100px] animate-float-slow mix-blend-screen" />
+        <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] bg-indigo-900/20 rounded-full blur-[80px] animate-float-delayed mix-blend-screen" />
         
         {/* Subtle grid pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-size-[64px_64px]" />
