@@ -249,7 +249,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-400 text-xs font-bold uppercase tracking-wider pl-1">Email Coordinates</Label>
+              <Label htmlFor="email" className="text-slate-400 text-xs font-bold uppercase tracking-wider pl-1">Email</Label>
               <div className="relative group">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 transition-colors group-focus-within:text-blue-400" />
                 <Input
@@ -294,7 +294,7 @@ export default function LoginPage() {
                 <Loader2 className="h-6 w-6 animate-spin text-white/80" />
               ) : mode === 'signin' ? (
                 <>
-                  <span className="drop-shadow-sm">Initialize Session</span>
+                  <span className="drop-shadow-sm">Sign in  </span>
                   <ArrowRight className="h-5 w-5 ml-1 animate-pulse" />
                 </>
               ) : (
