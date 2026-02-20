@@ -123,7 +123,7 @@ export default function AboutAppPage() {
 
         {/* Footer */}
         <div className="text-center text-slate-500 text-sm pb-8">
-          <p>Built with ❤️ using Next.js, Supabase, and Tailwind CSS</p>
+          <p>Built with ❤️ using Next.js, Supabase, and Tailwind CSS and Music</p>
           <p className="mt-2">© 2026 Submitly. All rights reserved.</p>
         </div>
       </div>
