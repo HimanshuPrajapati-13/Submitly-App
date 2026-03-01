@@ -274,25 +274,25 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
             disabled={isSendingReminder}
             onClick={handleSendReminder}
             className={cn(
-               "rounded-full px-3 transition-colors ml-auto mr-2",
+               "ml-auto rounded-full px-3 transition-colors",
                reminderSent 
                 ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
                 : "text-slate-400 hover:text-indigo-300 hover:bg-indigo-500/10"
             )}
           >
             {isSendingReminder ? (
-              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+              <Loader2 className="h-4 w-4 lg:mr-1 animate-spin" />
             ) : reminderSent ? (
-              <CheckCircle2 className="h-4 w-4 mr-1" />
+               <CheckCircle2 className="h-4 w-4 lg:mr-1" />
             ) : (
-              <Bell className="h-4 w-4 mr-1" />
+              <Bell className="h-4 w-4 lg:mr-1" />
             )}
-            {isSendingReminder ? 'Sending...' : reminderSent ? 'Sent!' : 'Reminder'}
+            <span className="hidden lg:inline">{isSendingReminder ? 'Sending...' : reminderSent ? 'Sent!' : 'Reminder'}</span>
           </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white ml-auto rounded-full hover:bg-white/5">
+              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white rounded-full hover:bg-white/5 ml-1">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
