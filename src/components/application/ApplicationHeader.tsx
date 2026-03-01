@@ -9,8 +9,11 @@ import {
   CheckCircle2,
   Clock,
   MoreHorizontal,
-  AlertTriangle
+  AlertTriangle,
+  Bell,
+  Loader2
 } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -44,6 +47,56 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
   const urgencyLevel = getUrgencyLevel(application.deadline);
   const urgencyConfig = getUrgencyConfig(urgencyLevel);
   const daysDisplay = formatDaysRemaining(application.deadline);
+
+  const [isSendingReminder, setIsSendingReminder] = useState(false);
+  const [reminderSent, setReminderSent] = useState(false);
+
+  const handleSendReminder = async () => {
+    if (isSendingReminder || reminderSent) return;
+    
+    setIsSendingReminder(true);
+    try {
+      const response = await fetch('/api/send-reminder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: 'workingadi300@gmail.com', 
+          subject: `Reminder: ${application.title} Deadline Approaching!`,
+          html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center; max-width: 600px; margin: 0 auto; background-color: #0f172a; color: #f8fafc; border-radius: 12px; border: 1px solid #334155;">
+              <h2 style="color: #60a5fa; margin-bottom: 8px;">Upcoming Deadline Reminder</h2>
+              <p style="font-size: 18px; margin-bottom: 24px;">Your application for <strong>${application.title}</strong> requires attention.</p>
+              
+              <div style="background-color: #1e293b; padding: 16px; border-radius: 8px; margin-bottom: 24px; text-align: left;">
+                <p style="margin: 0 0 8px 0; color: #94a3b8; font-size: 14px;">STATUS</p>
+                <p style="margin: 0 0 16px 0; font-weight: bold;">${statusLabels[application.status]} (${application.progress}%)</p>
+                
+                <p style="margin: 0 0 8px 0; color: #94a3b8; font-size: 14px;">DEADLINE</p>
+                <p style="margin: 0; font-weight: bold; color: ${application.urgencyLevel === 'red' || application.urgencyLevel === 'overdue' ? '#ef4444' : application.urgencyLevel === 'orange' ? '#f59e0b' : '#3b82f6'};">
+                  ${new Date(application.deadline).toLocaleDateString()} (${daysDisplay})
+                </p>
+              </div>
+              
+              <p style="color: #94a3b8; font-size: 14px; margin-top: 32px;">Sent via Submitly Tracker</p>
+            </div>
+          `
+        }),
+      });
+
+      if (response.ok) {
+        setReminderSent(true);
+        setTimeout(() => setReminderSent(false), 3000);
+      } else {
+        console.error('Failed to send reminder email');
+      }
+    } catch (error) {
+      console.error('Error sending reminder:', error);
+    } finally {
+      setIsSendingReminder(false);
+    }
+  };
 
   const handleStatusChange = (newStatus: Status) => {
     updateApplication(application.id, { status: newStatus });
@@ -148,6 +201,29 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
               </SelectContent>
             </Select>
             
+            {/* Send Reminder Button */}
+            <Button
+              variant="outline"
+              size="default"
+              disabled={isSendingReminder}
+              onClick={handleSendReminder}
+              className={cn(
+                "rounded-full border-white/10 transition-colors",
+                reminderSent 
+                  ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 hover:text-emerald-300"
+                  : "text-slate-300 bg-slate-900/50 hover:bg-indigo-500/20 hover:text-indigo-300 hover:border-indigo-500/30"
+              )}
+            >
+              {isSendingReminder ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : reminderSent ? (
+                <CheckCircle2 className="h-4 w-4 mr-2" />
+              ) : (
+                <Bell className="h-4 w-4 mr-2 hidden sm:block" />
+              )}
+              {isSendingReminder ? 'Sending...' : reminderSent ? 'Reminder Sent' : 'Send Reminder'}
+            </Button>
+
             {/* Deadline badge */}
             <div 
               className={cn(

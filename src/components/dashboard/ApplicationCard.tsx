@@ -18,6 +18,8 @@ import { formatDaysRemaining, getUrgencyConfig, formatTimeEstimate } from '@/lib
 import { useAppStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
+import { useState } from 'react';
+import { Loader2, Bell } from 'lucide-react';
 
 interface ApplicationCardProps {
   application: ApplicationWithDetails;
@@ -29,6 +31,9 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
   
   const urgencyConfig = getUrgencyConfig(application.urgencyLevel);
   const daysDisplay = formatDaysRemaining(application.deadline);
+  
+  const [isSendingReminder, setIsSendingReminder] = useState(false);
+  const [reminderSent, setReminderSent] = useState(false);
 
   const handleQuickAction = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -50,6 +55,57 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
   const handleDuplicate = (e: Event) => {
     e.stopPropagation();
     duplicateApplication(application.id);
+  };
+
+  const handleSendReminder = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isSendingReminder || reminderSent) return;
+    
+    setIsSendingReminder(true);
+    try {
+      // In a real app, you would fetch the current user's email from your auth provider
+      // For this bootcamp project, we are hardcoding the recipient to the TEST email
+      const response = await fetch('/api/send-reminder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: 'workingadi300@gmail.com', 
+          subject: `Reminder: ${application.title} Deadline Approaching!`,
+          html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center; max-width: 600px; margin: 0 auto; background-color: #0f172a; color: #f8fafc; border-radius: 12px; border: 1px solid #334155;">
+              <h2 style="color: #60a5fa; margin-bottom: 8px;">Upcoming Deadline Reminder</h2>
+              <p style="font-size: 18px; margin-bottom: 24px;">Your application for <strong>${application.title}</strong> requires attention.</p>
+              
+              <div style="background-color: #1e293b; padding: 16px; border-radius: 8px; margin-bottom: 24px; text-align: left;">
+                <p style="margin: 0 0 8px 0; color: #94a3b8; font-size: 14px;">STATUS</p>
+                <p style="margin: 0 0 16px 0; font-weight: bold;">${statusLabels[application.status]} (${application.progress}%)</p>
+                
+                <p style="margin: 0 0 8px 0; color: #94a3b8; font-size: 14px;">DEADLINE</p>
+                <p style="margin: 0; font-weight: bold; color: ${application.urgencyLevel === 'red' || application.urgencyLevel === 'overdue' ? '#ef4444' : application.urgencyLevel === 'orange' ? '#f59e0b' : '#3b82f6'};">
+                  ${new Date(application.deadline).toLocaleDateString()} (${daysDisplay})
+                </p>
+              </div>
+              
+              <p style="color: #94a3b8; font-size: 14px; margin-top: 32px;">Sent via Submitly Tracker</p>
+            </div>
+          `
+        }),
+      });
+
+      if (response.ok) {
+        setReminderSent(true);
+        // Reset the success state after 3 seconds so they could theoretically send another later
+        setTimeout(() => setReminderSent(false), 3000);
+      } else {
+        console.error('Failed to send reminder email');
+      }
+    } catch (error) {
+      console.error('Error sending reminder:', error);
+    } finally {
+      setIsSendingReminder(false);
+    }
   };
 
   return (
@@ -210,6 +266,29 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
               Start Working
             </Button>
           )}
+
+          {/* New Send Reminder Button directly on the card */}
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={isSendingReminder}
+            onClick={handleSendReminder}
+            className={cn(
+               "rounded-full px-3 transition-colors ml-auto mr-2",
+               reminderSent 
+                ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
+                : "text-slate-400 hover:text-indigo-300 hover:bg-indigo-500/10"
+            )}
+          >
+            {isSendingReminder ? (
+              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+            ) : reminderSent ? (
+              <CheckCircle2 className="h-4 w-4 mr-1" />
+            ) : (
+              <Bell className="h-4 w-4 mr-1" />
+            )}
+            {isSendingReminder ? 'Sending...' : reminderSent ? 'Sent!' : 'Reminder'}
+          </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>

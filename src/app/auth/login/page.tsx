@@ -142,7 +142,7 @@ export default function LoginPage() {
         {/* Subtle star field grain overlay could go here if needed */}
       </div>
 
-      <div className="w-full max-w-sm relative z-10 flex flex-col items-center">
+      <div className="w-full max-w-xs relative z-10 flex flex-col items-center">
         
         {/* MISSION CONTROL LOGO */}
         <div className="flex flex-col items-center gap-4 mb-8 animate-fade-in-down">
