@@ -13,7 +13,7 @@ export type Status =
 
 export type DocLabel = 'RESUME' | 'SOP' | 'TRANSCRIPT' | 'ID' | 'OTHER';
 
-export type UrgencyLevel = 'gray' | 'blue' | 'yellow' | 'orange' | 'red' | 'overdue';
+export type UrgencyLevel = 'gray' | 'blue' | 'yellow' | 'orange' | 'red' | 'overdue' | 'closed';
 
 // Link attached to a step
 export interface StepLink {
@@ -70,6 +70,7 @@ export interface Application {
   priority: number;
   notes?: string;
   remindersEnabled: boolean;
+  customReminderDate?: string; // ISO date string
   createdAt: string;
   updatedAt: string;
 }

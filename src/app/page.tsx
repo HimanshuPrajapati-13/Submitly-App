@@ -68,7 +68,7 @@ function DashboardContent() {
               />
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4 max-w-4xl mx-auto">
               {applications.map((app, index) => (
                 <div 
                   key={app.id} 

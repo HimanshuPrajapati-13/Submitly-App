@@ -137,7 +137,7 @@ export const useAppStore = create<AppState>()(
             .select('*');
           
           // Convert to app types
-          const applications: Application[] = (apps || []).map(app => ({
+          const remoteApplications: Application[] = (apps || []).map(app => ({
             id: app.id,
             userId: app.user_id,
             title: app.title,
@@ -146,12 +146,13 @@ export const useAppStore = create<AppState>()(
             status: app.status as Status,
             priority: app.priority,
             notes: app.notes || undefined,
-            remindersEnabled: app.reminders_enabled,
+            remindersEnabled: true,
+            customReminderDate: undefined,
             createdAt: app.created_at,
             updatedAt: app.updated_at,
           }));
           
-          const steps: Step[] = (stepsData || []).map(step => {
+          const remoteSteps: Step[] = (stepsData || []).map(step => {
             const stepLinks: StepLink[] = (linksData || [])
               .filter(l => l.step_id === step.id)
               .map(l => ({
@@ -188,8 +189,47 @@ export const useAppStore = create<AppState>()(
               files: stepFiles,
             };
           });
-          
-          set({ applications, steps, isLoading: false, isSynced: true });
+
+          // Merge: keep any locally-persisted apps that didn't make it to Supabase
+          // (e.g., if the insert failed silently). Remote data takes priority for
+          // apps that exist in both places.
+          const remoteIds = new Set(remoteApplications.map(a => a.id));
+          const localApps = get().applications;
+          const localSteps = get().steps;
+
+          const unsyncedApps = localApps.filter(a => !remoteIds.has(a.id));
+          const unsyncedSteps = localSteps.filter(s =>
+            unsyncedApps.some(a => a.id === s.applicationId)
+          );
+
+          // Re-sync any unsynced apps to Supabase in the background
+          if (unsyncedApps.length > 0) {
+            unsyncedApps.forEach(async (app) => {
+              try {
+                await supabase.from('applications').upsert({
+                  id: app.id,
+                  user_id: user.id,
+                  title: app.title,
+                  category: app.category,
+                  deadline: app.deadline,
+                  status: app.status,
+                  priority: app.priority,
+                  notes: app.notes,
+                  created_at: app.createdAt,
+                  updated_at: app.updatedAt,
+                });
+              } catch (e) {
+                console.error('Failed to re-sync unsynced app:', app.id, e);
+              }
+            });
+          }
+
+          set({
+            applications: [...remoteApplications, ...unsyncedApps],
+            steps: [...remoteSteps, ...unsyncedSteps],
+            isLoading: false,
+            isSynced: true,
+          });
         } catch (error) {
           console.error('Failed to load from Supabase:', error);
           set({ isLoading: false });
@@ -213,6 +253,7 @@ export const useAppStore = create<AppState>()(
           status: 'DRAFT',
           priority: 0,
           remindersEnabled: true,
+          customReminderDate: undefined,
           createdAt: now,
           updatedAt: now,
         };
@@ -250,37 +291,45 @@ export const useAppStore = create<AppState>()(
         
         // Sync to Supabase if user is logged in
         if (user) {
-          try {
-            await supabase.from('applications').insert({
-              id: newApp.id,
-              user_id: userId,
-              title: newApp.title,
-              category: newApp.category,
-              deadline: newApp.deadline,
-              status: newApp.status,
-              priority: newApp.priority,
-              notes: newApp.notes,
-              reminders_enabled: newApp.remindersEnabled,
-              created_at: newApp.createdAt,
-              updated_at: newApp.updatedAt,
-            });
-            
-            if (templateSteps.length > 0) {
-              await supabase.from('steps').insert(
-                templateSteps.map(step => ({
-                  id: step.id,
-                  application_id: step.applicationId,
-                  user_id: userId,
-                  title: step.title,
-                  position: step.position,
-                  completed: step.completed,
-                  estimated_minutes: step.estimatedMinutes,
-                  created_at: step.createdAt,
-                }))
-              );
+          const { error: insertError } = await supabase.from('applications').insert({
+            id: newApp.id,
+            user_id: userId,
+            title: newApp.title,
+            category: newApp.category,
+            deadline: newApp.deadline,
+            status: newApp.status,
+            priority: newApp.priority,
+            notes: newApp.notes ?? null,
+            created_at: newApp.createdAt,
+            updated_at: newApp.updatedAt,
+          });
+
+          if (insertError) {
+            // Local state is already updated, so the card will show.
+            // The merge logic in loadFromSupabase will re-sync it next time.
+            console.error(
+              'Failed to insert application to Supabase:',
+              insertError.message,
+              '| code:', insertError.code,
+              '| details:', insertError.details,
+              '| hint:', insertError.hint
+            );
+          } else if (templateSteps.length > 0) {
+            const { error: stepsError } = await supabase.from('steps').insert(
+              templateSteps.map(step => ({
+                id: step.id,
+                application_id: step.applicationId,
+                user_id: userId,
+                title: step.title,
+                position: step.position,
+                completed: step.completed,
+                estimated_minutes: step.estimatedMinutes,
+                created_at: step.createdAt,
+              }))
+            );
+            if (stepsError) {
+              console.error('Failed to insert template steps to Supabase:', stepsError);
             }
-          } catch (error) {
-            console.error('Failed to sync to Supabase:', error);
           }
         }
         
@@ -376,7 +425,6 @@ export const useAppStore = create<AppState>()(
               status: duplicatedApp.status,
               priority: duplicatedApp.priority,
               notes: duplicatedApp.notes,
-              reminders_enabled: duplicatedApp.remindersEnabled,
               created_at: duplicatedApp.createdAt,
               updated_at: duplicatedApp.updatedAt,
             }).then(() => {
@@ -654,7 +702,7 @@ export const useAppStore = create<AppState>()(
         
         const progress = calculateProgress(appSteps);
         const daysRemaining = getDaysRemaining(app.deadline);
-        const urgencyLevel = getUrgencyLevel(app.deadline);
+        const urgencyLevel = getUrgencyLevel(app.deadline, app.status);
         const nextAction = getNextAction(appSteps);
         
         return {
@@ -680,7 +728,7 @@ export const useAppStore = create<AppState>()(
           
           const progress = calculateProgress(appSteps);
           const daysRemaining = getDaysRemaining(app.deadline);
-          const urgencyLevel = getUrgencyLevel(app.deadline);
+          const urgencyLevel = getUrgencyLevel(app.deadline, app.status);
           const nextAction = getNextAction(appSteps);
           
           return {

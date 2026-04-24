@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Zap, Mail, Lock, ArrowRight, Loader2, Github, UserPlus, Fingerprint } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -142,7 +143,7 @@ export default function LoginPage() {
         {/* Subtle star field grain overlay could go here if needed */}
       </div>
 
-      <div className="w-full max-w-xs relative z-10 flex flex-col items-center">
+      <div className="w-full max-w-lg relative z-10 flex flex-col items-center">
         
         {/* MISSION CONTROL LOGO */}
         <div className="flex flex-col items-center gap-4 mb-8 animate-fade-in-down">
@@ -307,11 +308,23 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <div className="mt-8 flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity duration-300">
-          <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse" />
-          <p className="text-slate-500 text-xs font-mono tracking-widest uppercase">
-            Your purpose-built application tracker for managing high-stakes deadlines.
-          </p>
+        <div className="mt-8 flex flex-col items-center gap-4">
+          <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity duration-300">
+            <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse" />
+            <p className="text-slate-500 text-xs font-mono tracking-widest uppercase text-center">
+              Your purpose-built application tracker for managing high-stakes deadlines.
+            </p>
+          </div>
+          
+          <div className="flex items-center justify-center gap-4 border-t border-white/5 pt-4 w-full">
+            <Button onClick={() => window.location.href = '/auth/about'} variant="ghost" size="sm" className="text-slate-400 hover:text-white hover:bg-white/5 rounded-full text-xs uppercase tracking-wider font-semibold">
+              About App
+            </Button>
+            <div className="w-1 h-1 rounded-full bg-slate-600"></div>
+            <Button onClick={() => window.location.href = '/auth/developer'} variant="ghost" size="sm" className="text-slate-400 hover:text-white hover:bg-white/5 rounded-full text-xs uppercase tracking-wider font-semibold">
+              About Developer
+            </Button>
+          </div>
         </div>
       </div>
     </div>

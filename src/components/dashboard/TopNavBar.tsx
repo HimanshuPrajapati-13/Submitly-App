@@ -14,6 +14,7 @@ import { useAppStore } from '@/lib/store';
 import { TEMPLATES } from '@/lib/templates';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { NotificationsDropdown } from './NotificationsDropdown';
 
 interface TopNavBarProps {
   onNewApplication: (templateId?: string) => void;
@@ -107,9 +108,7 @@ export function TopNavBar({ onNewApplication }: TopNavBarProps) {
           </DropdownMenu>
 
           {/* Notifications */}
-          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/10 rounded-full">
-            <Bell className="h-5 w-5" />
-          </Button>
+          <NotificationsDropdown />
 
           {/* Profile */}
           <DropdownMenu>

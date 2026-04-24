@@ -15,7 +15,8 @@ import {
   ExternalLink,
   FileText,
   Upload,
-  X
+  X,
+  Pencil
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,6 +61,11 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingFor, setUploadingFor] = useState<string | null>(null);
 
+  // Edit step state
+  const [editingStepId, setEditingStepId] = useState<string | null>(null);
+  const [editStepTitle, setEditStepTitle] = useState('');
+  const [editStepTime, setEditStepTime] = useState('');
+
   const handleAddStep = () => {
     if (newStepTitle.trim()) {
       addStep(
@@ -81,6 +87,16 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
       if (reason) {
         updateStep(step.id, { blockedBy: reason });
       }
+    }
+  };
+
+  const handleSaveEditStep = (stepId: string) => {
+    if (editStepTitle.trim()) {
+      updateStep(stepId, {
+        title: editStepTitle.trim(),
+        estimatedMinutes: editStepTime ? parseInt(editStepTime, 10) : undefined,
+      });
+      setEditingStepId(null);
     }
   };
 
@@ -188,6 +204,44 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
 
               {/* Content */}
               <div className="flex-1 min-w-0">
+                {editingStepId === step.id ? (
+                  <div className="mb-3 p-3 bg-slate-800/80 rounded-lg border border-blue-500/30">
+                    <div className="flex gap-3 mb-2">
+                      <Input
+                        value={editStepTitle}
+                        onChange={(e) => setEditStepTitle(e.target.value)}
+                        placeholder="Step title..."
+                        className="flex-1 bg-slate-900 border-white/10 text-white"
+                        autoFocus
+                        onKeyDown={(e) => e.key === 'Enter' && handleSaveEditStep(step.id)}
+                      />
+                      <Input
+                        value={editStepTime}
+                        onChange={(e) => setEditStepTime(e.target.value)}
+                        placeholder="Min"
+                        type="number"
+                        className="w-20 bg-slate-900 border-white/10 text-white"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleSaveEditStep(step.id)}
+                        disabled={!editStepTitle.trim()}
+                        className="bg-blue-600 hover:bg-blue-500"
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setEditingStepId(null)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1">
                     <p className={cn(
@@ -262,6 +316,7 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                     </button>
                   </div>
                 </div>
+                )}
 
                 {/* Expanded view */}
                 {expandedStepId === step.id && (
@@ -460,6 +515,19 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                             Mark Blocked
                           </>
                         )}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setEditingStepId(step.id);
+                          setEditStepTitle(step.title);
+                          setEditStepTime(step.estimatedMinutes ? String(step.estimatedMinutes) : '');
+                        }}
+                        className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
+                      >
+                        <Pencil className="h-3 w-3 mr-1" />
+                        Edit
                       </Button>
                       <Button
                         size="sm"

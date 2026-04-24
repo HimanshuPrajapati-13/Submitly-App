@@ -44,12 +44,16 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
   const router = useRouter();
   const { updateApplication, deleteApplication, duplicateApplication } = useAppStore();
   
-  const urgencyLevel = getUrgencyLevel(application.deadline);
+  const urgencyLevel = getUrgencyLevel(application.deadline, application.status);
   const urgencyConfig = getUrgencyConfig(urgencyLevel);
-  const daysDisplay = formatDaysRemaining(application.deadline);
+  const daysDisplay = formatDaysRemaining(application.deadline, application.status);
 
   const [isSendingReminder, setIsSendingReminder] = useState(false);
   const [reminderSent, setReminderSent] = useState(false);
+  const [isEditingDeadline, setIsEditingDeadline] = useState(false);
+  const [tempDeadline, setTempDeadline] = useState(
+    application.deadline ? new Date(application.deadline).toISOString().slice(0, 16) : ''
+  );
 
   const handleSendReminder = async () => {
     if (isSendingReminder || reminderSent) return;
@@ -102,6 +106,13 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
     updateApplication(application.id, { status: newStatus });
   };
 
+  const handleDeadlineSave = () => {
+    if (tempDeadline) {
+      updateApplication(application.id, { deadline: new Date(tempDeadline).toISOString() });
+    }
+    setIsEditingDeadline(false);
+  };
+
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete this application?')) {
       deleteApplication(application.id);
@@ -114,6 +125,51 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
     if (newId) {
       router.push(`/applications/${newId}`);
     }
+  };
+
+  const handleScheduleReminder = async (daysFromNow: number) => {
+    try {
+      setIsSendingReminder(true);
+      
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + daysFromNow);
+      // Ensure hour is set nicely for the cron job comparison
+      targetDate.setHours(8, 0, 0, 0); 
+      
+      await updateApplication(application.id, {
+        customReminderDate: targetDate.toISOString()
+      });
+      
+      setReminderSent(true);
+      setTimeout(() => setReminderSent(false), 3000);
+    } catch (error) {
+      console.error('Failed to schedule reminder', error);
+      alert('Failed to schedule reminder. Please try again.');
+    } finally {
+      setIsSendingReminder(false);
+    }
+  };
+
+  const handleCustomSchedule = async (dateString: string) => {
+     try {
+       if (!dateString) return;
+       setIsSendingReminder(true);
+       
+       const targetDate = new Date(dateString);
+       targetDate.setHours(8, 0, 0, 0);
+       
+       await updateApplication(application.id, {
+         customReminderDate: targetDate.toISOString()
+       });
+       
+       setReminderSent(true);
+       setTimeout(() => setReminderSent(false), 3000);
+     } catch(error) {
+       console.error('Failed to schedule custom reminder', error);
+       alert('Failed to schedule custom reminder. Please try again.');
+     } finally {
+       setIsSendingReminder(false);
+     }
   };
 
   return (
@@ -175,10 +231,42 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
                 {categoryLabels[application.category]}
               </Badge>
               <span>•</span>
-              <span className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                {format(new Date(application.deadline), 'MMMM d, yyyy h:mm a')}
-              </span>
+              {isEditingDeadline ? (
+                <div className="flex items-center gap-2">
+                  <input 
+                    type="datetime-local" 
+                    value={tempDeadline}
+                    onChange={(e) => setTempDeadline(e.target.value)}
+                    className="bg-slate-900 border border-white/10 text-white text-xs rounded-md px-2 py-1 outline-none focus:border-blue-500/50"
+                  />
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    onClick={handleDeadlineSave}
+                    className="h-6 px-2 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
+                  >
+                    Save
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    onClick={() => setIsEditingDeadline(false)}
+                    className="h-6 px-2 text-slate-400 hover:text-red-300 hover:bg-red-500/10"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              ) : (
+                <span 
+                  className="flex items-center gap-1 cursor-pointer hover:text-blue-400 group transition-colors"
+                  onClick={() => setIsEditingDeadline(true)}
+                  title="Click to edit deadline"
+                >
+                  <Clock className="h-4 w-4 group-hover:animate-pulse" />
+                  {format(new Date(application.deadline), 'MMMM d, yyyy h:mm a')}
+                  <Edit2 className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity ml-1" />
+                </span>
+              )}
             </div>
           </div>
           
@@ -201,28 +289,68 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
               </SelectContent>
             </Select>
             
-            {/* Send Reminder Button */}
-            <Button
-              variant="outline"
-              size="default"
-              disabled={isSendingReminder}
-              onClick={handleSendReminder}
-              className={cn(
-                "rounded-full border-white/10 transition-colors",
-                reminderSent 
-                  ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 hover:text-emerald-300"
-                  : "text-slate-300 bg-slate-900/50 hover:bg-indigo-500/20 hover:text-indigo-300 hover:border-indigo-500/30"
-              )}
-            >
-              {isSendingReminder ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : reminderSent ? (
-                <CheckCircle2 className="h-4 w-4 mr-2" />
-              ) : (
-                <Bell className="h-4 w-4 mr-2 hidden sm:block" />
-              )}
-              {isSendingReminder ? 'Sending...' : reminderSent ? 'Reminder Sent' : 'Send Reminder'}
-            </Button>
+            {/* Send/Schedule Reminder Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="default"
+                  disabled={isSendingReminder}
+                  className={cn(
+                    "rounded-full border-white/10 transition-colors",
+                    reminderSent 
+                      ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 hover:text-emerald-300"
+                      : "text-slate-300 bg-slate-900/50 hover:bg-indigo-500/20 hover:text-indigo-300 hover:border-indigo-500/30"
+                  )}
+                >
+                  {isSendingReminder ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : reminderSent ? (
+                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                  ) : (
+                    <Bell className="h-4 w-4 mr-2 hidden sm:block" />
+                  )}
+                  {isSendingReminder ? 'Sending...' : reminderSent ? 'Reminder Scheduled' : 'Schedule Reminder'}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-slate-900 border-white/10 w-48">
+                <DropdownMenuItem 
+                  onClick={handleSendReminder}
+                  className="text-emerald-400 focus:bg-white/10 focus:text-emerald-400 cursor-pointer"
+                >
+                  <Bell className="h-4 w-4 mr-2" />
+                  Send Now
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem 
+                  onClick={() => handleScheduleReminder(2)}
+                  className="text-slate-200 focus:bg-white/10 cursor-pointer"
+                >
+                  <Clock className="h-4 w-4 mr-2" />
+                  In 2 Days
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleScheduleReminder(4)}
+                  className="text-slate-200 focus:bg-white/10 cursor-pointer"
+                >
+                  <Clock className="h-4 w-4 mr-2" />
+                  In 4 Days
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-white/10" />
+                <div className="px-2 py-1.5 flex flex-col gap-2">
+                   <span className="text-xs text-slate-400">Custom Date</span>
+                   <div className="flex items-center gap-2">
+                     <input 
+                       type="date"
+                       className="bg-slate-800 border-white/10 text-white text-xs rounded px-2 py-1 w-full"
+                       onChange={(e) => {
+                         if(e.target.value) handleCustomSchedule(e.target.value);
+                       }}
+                     />
+                   </div>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Deadline badge */}
             <div 

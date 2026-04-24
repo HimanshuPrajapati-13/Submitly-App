@@ -1,5 +1,5 @@
 import { differenceInDays, parseISO } from 'date-fns';
-import { UrgencyLevel, NextAction, Step } from './types';
+import { UrgencyLevel, NextAction, Step, Status } from './types';
 
 /**
  * Calculate priority score for an application
@@ -31,7 +31,15 @@ export function getDaysRemaining(deadline: string | Date | null | undefined): nu
 /**
  * Get urgency level based on days remaining
  */
-export function getUrgencyLevel(deadline: string | Date | null | undefined): UrgencyLevel {
+export function getUrgencyLevel(
+  deadline: string | Date | null | undefined,
+  status?: Status
+): UrgencyLevel {
+  // Terminal statuses always show as 'closed' regardless of deadline
+  if (status === 'CLOSED' || status === 'ACCEPTED' || status === 'REJECTED') {
+    return 'closed';
+  }
+
   const daysRemaining = getDaysRemaining(deadline);
   
   if (daysRemaining >= 999) return 'gray'; // No deadline
@@ -96,6 +104,13 @@ export function getUrgencyConfig(urgencyLevel: UrgencyLevel): {
       icon: '🔴',
       label: 'OVERDUE',
     },
+    closed: {
+      color: 'text-slate-400',
+      bgColor: 'bg-slate-500/10',
+      borderColor: 'border-slate-500/30',
+      icon: '⚫',
+      label: 'CLOSED',
+    },
   };
   return configs[urgencyLevel];
 }
@@ -103,7 +118,13 @@ export function getUrgencyConfig(urgencyLevel: UrgencyLevel): {
 /**
  * Format days remaining for display
  */
-export function formatDaysRemaining(deadline: string | Date | null | undefined): string {
+export function formatDaysRemaining(
+  deadline: string | Date | null | undefined,
+  status?: Status
+): string {
+  if (status === 'CLOSED' || status === 'ACCEPTED' || status === 'REJECTED') {
+    return status === 'ACCEPTED' ? 'Accepted' : status === 'REJECTED' ? 'Rejected' : 'Closed';
+  }
   const days = getDaysRemaining(deadline);
   if (days >= 999) return 'No deadline';
   if (days < 0) return 'OVERDUE';

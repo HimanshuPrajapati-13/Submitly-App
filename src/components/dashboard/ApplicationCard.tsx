@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { MoreHorizontal, Send, Play, CheckCircle2 } from 'lucide-react';
+import { MoreHorizontal, Send, Play, CheckCircle2, Clock } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -30,7 +30,7 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
   const { updateApplication, deleteApplication, duplicateApplication } = useAppStore();
   
   const urgencyConfig = getUrgencyConfig(application.urgencyLevel);
-  const daysDisplay = formatDaysRemaining(application.deadline);
+  const daysDisplay = formatDaysRemaining(application.deadline, application.status);
   
   const [isSendingReminder, setIsSendingReminder] = useState(false);
   const [reminderSent, setReminderSent] = useState(false);
@@ -59,19 +59,16 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
 
   const handleSendReminder = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isSendingReminder || reminderSent) return;
-    
-    setIsSendingReminder(true);
     try {
-      // In a real app, you would fetch the current user's email from your auth provider
-      // For this bootcamp project, we are hardcoding the recipient to the TEST email
+      setIsSendingReminder(true);
+      
       const response = await fetch('/api/send-reminder', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          to: 'workingadi300@gmail.com', 
+          to: 'workingadi300@gmail.com', // Static for now as requested
           subject: `Reminder: ${application.title} Deadline Approaching!`,
           html: `
             <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center; max-width: 600px; margin: 0 auto; background-color: #0f172a; color: #f8fafc; border-radius: 12px; border: 1px solid #334155;">
@@ -84,7 +81,7 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
                 
                 <p style="margin: 0 0 8px 0; color: #94a3b8; font-size: 14px;">DEADLINE</p>
                 <p style="margin: 0; font-weight: bold; color: ${application.urgencyLevel === 'red' || application.urgencyLevel === 'overdue' ? '#ef4444' : application.urgencyLevel === 'orange' ? '#f59e0b' : '#3b82f6'};">
-                  ${new Date(application.deadline).toLocaleDateString()} (${daysDisplay})
+                  ${application.deadline ? new Date(application.deadline).toLocaleDateString() : 'No deadline'} (${daysDisplay})
                 </p>
               </div>
               
@@ -94,18 +91,62 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
         }),
       });
 
-      if (response.ok) {
-        setReminderSent(true);
-        // Reset the success state after 3 seconds so they could theoretically send another later
-        setTimeout(() => setReminderSent(false), 3000);
-      } else {
-        console.error('Failed to send reminder email');
+      if (!response.ok) {
+        throw new Error('Failed to send reminder email');
       }
+
+      setReminderSent(true);
+      setTimeout(() => setReminderSent(false), 3000);
     } catch (error) {
-      console.error('Error sending reminder:', error);
+      console.error('Failed to send reminder', error);
+      alert('Failed to send reminder. Please try again.');
     } finally {
       setIsSendingReminder(false);
     }
+  };
+
+  const handleScheduleReminder = async (daysFromNow: number) => {
+    try {
+      setIsSendingReminder(true);
+      
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + daysFromNow);
+      targetDate.setHours(8, 0, 0, 0); 
+      
+      await updateApplication(application.id, {
+        customReminderDate: targetDate.toISOString()
+      });
+      
+      setReminderSent(true);
+      setTimeout(() => setReminderSent(false), 3000);
+    } catch (error) {
+      console.error('Failed to schedule reminder', error);
+      alert('Failed to schedule reminder. Please try again.');
+    } finally {
+      setIsSendingReminder(false);
+    }
+  };
+
+  const handleCustomSchedule = async (dateString: string) => {
+     try {
+       if (!dateString) return;
+       setIsSendingReminder(true);
+       
+       const targetDate = new Date(dateString);
+       targetDate.setHours(8, 0, 0, 0);
+       
+       await updateApplication(application.id, {
+         customReminderDate: targetDate.toISOString()
+       });
+       
+       setReminderSent(true);
+       setTimeout(() => setReminderSent(false), 3000);
+     } catch(error) {
+       console.error('Failed to schedule custom reminder', error);
+       alert('Failed to schedule custom reminder. Please try again.');
+     } finally {
+       setIsSendingReminder(false);
+     }
   };
 
   return (
@@ -129,10 +170,10 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
         )}
       />
       
-      <div className="relative p-6">
+      <div className="relative p-3">
         {/* Line 1: Title + Deadline */}
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <h3 className="text-lg font-bold text-white truncate flex-1 tracking-tight">
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <h3 className="text-base font-bold text-white truncate flex-1 tracking-tight">
             {application.title}
           </h3>
           <div 
@@ -151,7 +192,7 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
         </div>
 
         {/* Line 2: Next Action */}
-        <div className="mb-5">
+        <div className="mb-2">
           {application.nextAction.allComplete ? (
             <div className="flex items-center gap-2 text-emerald-400">
               <CheckCircle2 className="h-4 w-4" />
@@ -183,75 +224,72 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
           )}
         </div>
 
-        {/* Line 3: Progress Bar + Category */}
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex-1">
-            <Progress 
-              value={application.progress} 
-              className="h-2 bg-slate-800/50"
-              indicatorClassName={cn(
-                application.progress === 100 ? 'bg-emerald-500' : 'bg-blue-500'
+        {/* Line 3: Progress & Meta (Combined for compactness) */}
+        <div className="flex flex-col gap-1.5 mb-2 bg-slate-900/40 rounded-lg p-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 flex-1 mr-3">
+              <Progress 
+                value={application.progress} 
+                className="h-1.5 bg-slate-800"
+                indicatorClassName={cn(
+                  application.progress === 100 ? 'bg-emerald-500' : 'bg-blue-500'
+                )}
+              />
+              <span className="text-xs font-bold text-slate-400 w-8 text-right">
+                {application.progress}%
+              </span>
+            </div>
+            <Badge 
+              variant="secondary" 
+              className={cn(
+                'text-white text-[9px] font-bold uppercase tracking-wider px-1.5 py-0',
+                categoryColors[application.category]
               )}
-            />
+            >
+              {categoryLabels[application.category]}
+            </Badge>
           </div>
-          <span className="text-sm font-bold text-slate-400">
-            {application.progress}%
-          </span>
-          <Badge 
-            variant="secondary" 
-            className={cn(
-              'text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5',
-              categoryColors[application.category]
-            )}
-          >
-            {categoryLabels[application.category]}
-          </Badge>
+          
+          <div className="flex items-center gap-2 text-[10px] text-slate-500 justify-between">
+            <div className="flex items-center gap-2">
+              <span className={cn(
+                'px-1.5 py-0.5 rounded text-[9px] font-medium',
+                application.status === 'SUBMITTED' ? 'bg-emerald-500/20 text-emerald-400' :
+                application.status === 'IN_PROGRESS' ? 'bg-blue-500/20 text-blue-400' :
+                'bg-slate-500/20 text-slate-400'
+              )}>
+                {statusLabels[application.status]}
+              </span>
+              <span>•</span>
+              <span>{application.steps.filter(s => s.completed).length}/{application.steps.length} steps</span>
+            </div>
+            <span>Updated {formatDistanceToNow(new Date(application.updatedAt))}</span>
+          </div>
         </div>
 
-        {/* Line 4: Metadata */}
-        <div className="flex items-center gap-2 text-sm text-slate-500">
-          <span className={cn(
-            'px-2 py-0.5 rounded-md text-xs font-medium',
-            application.status === 'SUBMITTED' ? 'bg-emerald-500/20 text-emerald-400' :
-            application.status === 'IN_PROGRESS' ? 'bg-blue-500/20 text-blue-400' :
-            application.status === 'DRAFT' ? 'bg-slate-500/20 text-slate-400' :
-            'bg-slate-500/20 text-slate-400'
-          )}>
-            {statusLabels[application.status]}
-          </span>
-          <span>•</span>
-          <span>
-            {application.steps.filter(s => s.completed).length}/{application.steps.length} steps
-          </span>
-          <span>•</span>
-          <span>
-            Updated {formatDistanceToNow(new Date(application.updatedAt), { addSuffix: true })}
-          </span>
-        </div>
-
-        {/* Line 5: Quick Actions */}
-        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/5">
+        {/* Line 4: Quick Actions */}
+        <div className="flex items-center gap-1 mt-0 pt-0">
           <Button 
             variant="ghost" 
             size="sm" 
-            className="text-slate-400 hover:text-white hover:bg-white/5 rounded-full px-3"
+            className="text-slate-400 hover:text-white hover:bg-white/5 rounded-full px-2 h-8 text-xs font-medium"
             onClick={(e) => {
               e.stopPropagation();
               router.push(`/applications/${application.id}`);
             }}
           >
-            View Details
+            Details
           </Button>
           
           {(application.status === 'DRAFT' || application.status === 'IN_PROGRESS') && (
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-full px-3"
+              className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-full px-2 h-8 text-xs font-medium"
               onClick={handleQuickAction}
             >
-              <Send className="h-4 w-4 mr-1" />
-              Mark Submitted
+              <Send className="h-3 w-3 mr-1" />
+              Submit
             </Button>
           )}
           
@@ -259,44 +297,87 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-full px-3"
+              className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-full px-2 h-8 text-xs font-medium"
               onClick={handleQuickAction}
             >
-              <Play className="h-4 w-4 mr-1" />
-              Start Working
+              <Play className="h-3 w-3 mr-1" />
+              Start
             </Button>
           )}
 
-          {/* New Send Reminder Button directly on the card */}
-          <Button
-            variant="ghost"
-            size="sm"
-            disabled={isSendingReminder}
-            onClick={handleSendReminder}
-            className={cn(
-               "ml-auto rounded-full px-3 transition-colors",
-               reminderSent 
-                ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
-                : "text-slate-400 hover:text-indigo-300 hover:bg-indigo-500/10"
-            )}
-          >
-            {isSendingReminder ? (
-              <Loader2 className="h-4 w-4 lg:mr-1 animate-spin" />
-            ) : reminderSent ? (
-               <CheckCircle2 className="h-4 w-4 lg:mr-1" />
-            ) : (
-              <Bell className="h-4 w-4 lg:mr-1" />
-            )}
-            <span className="hidden lg:inline">{isSendingReminder ? 'Sending...' : reminderSent ? 'Sent!' : 'Reminder'}</span>
-          </Button>
+          {/* Send/Schedule Reminder Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={isSendingReminder}
+                className={cn(
+                   "ml-auto rounded-full px-2 h-8 transition-colors text-xs font-medium",
+                   reminderSent 
+                    ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
+                    : "text-slate-400 hover:text-indigo-300 hover:bg-indigo-500/10"
+                )}
+              >
+                {isSendingReminder ? (
+                  <Loader2 className="h-3 w-3 lg:mr-1 animate-spin" />
+                ) : reminderSent ? (
+                   <CheckCircle2 className="h-3 w-3 lg:mr-1" />
+                ) : (
+                  <Bell className="h-3 w-3 lg:mr-1" />
+                )}
+                <span className="hidden lg:inline">{isSendingReminder ? 'Sending...' : reminderSent ? 'Scheduled' : 'Reminder'}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-[#0b1220] border-white/10 backdrop-blur-xl w-48 z-[100]">
+              <DropdownMenuItem 
+                onClick={(e) => { e.stopPropagation(); handleSendReminder(e); }}
+                className="text-emerald-400 focus:bg-white/10 focus:text-emerald-400 cursor-pointer"
+              >
+                <Bell className="h-4 w-4 mr-2" />
+                Send Now
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuItem 
+                onClick={(e) => { e.stopPropagation(); handleScheduleReminder(2); }}
+                className="text-slate-200 focus:bg-white/10 cursor-pointer"
+              >
+                <Clock className="h-4 w-4 mr-2" />
+                In 2 Days
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={(e) => { e.stopPropagation(); handleScheduleReminder(4); }}
+                className="text-slate-200 focus:bg-white/10 cursor-pointer"
+              >
+                <Clock className="h-4 w-4 mr-2" />
+                In 4 Days
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-white/10" />
+              <div 
+                className="px-2 py-1.5 flex flex-col gap-2"
+                onClick={(e) => e.stopPropagation()} // Prevent card click when clicking inside date picker
+              >
+                 <span className="text-xs text-slate-400">Custom Date</span>
+                 <div className="flex items-center gap-2">
+                   <input 
+                     type="date"
+                     className="bg-slate-800 border-white/10 text-white text-xs rounded px-2 py-1 w-full"
+                     onChange={(e) => {
+                       if(e.target.value) handleCustomSchedule(e.target.value);
+                     }}
+                   />
+                 </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white rounded-full hover:bg-white/5 ml-1">
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white rounded-full hover:bg-white/5 ml-1">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-[#0b1220] border-white/10 backdrop-blur-xl">
+            <DropdownMenuContent align="end" className="bg-[#0b1220] border-white/10 backdrop-blur-xl z-[100]">
               <DropdownMenuItem 
                 onClick={(e) => handleDuplicate(e as unknown as Event)}
                 className="text-slate-200 focus:bg-blue-600/20 focus:text-white cursor-pointer rounded-lg my-1"

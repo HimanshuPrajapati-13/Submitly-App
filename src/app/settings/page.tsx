@@ -147,7 +147,7 @@ export default function SettingsPage() {
         {/* App Info */}
         <div className="mt-8 text-center">
           <p className="text-lg font-bold text-slate-700">Submitly</p>
-          <p className="text-xs text-slate-600 uppercase tracking-widest">Mission Control v1.0.0</p>
+          <p className="text-xs text-slate-600 uppercase tracking-widest">Submit on Time v1.1.1</p>
         </div>
       </div>
     </div>

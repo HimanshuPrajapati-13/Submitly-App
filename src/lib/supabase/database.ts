@@ -16,6 +16,7 @@ interface DbApplication {
   priority: number;
   notes: string | null;
   reminders_enabled: boolean;
+  custom_reminder_date: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -70,6 +71,7 @@ function toApplication(db: DbApplication): Application {
     priority: db.priority,
     notes: db.notes || undefined,
     remindersEnabled: db.reminders_enabled,
+    customReminderDate: db.custom_reminder_date || undefined,
     createdAt: db.created_at,
     updatedAt: db.updated_at,
   };
@@ -182,6 +184,7 @@ export async function updateApplication(
   if (updates.priority !== undefined) dbUpdates.priority = updates.priority;
   if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
   if (updates.remindersEnabled !== undefined) dbUpdates.reminders_enabled = updates.remindersEnabled;
+  if (updates.customReminderDate !== undefined) dbUpdates.custom_reminder_date = updates.customReminderDate === null ? null : updates.customReminderDate;
 
   const { error } = await supabase
     .from('applications')
