@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email';
-// You can optionally import your auth client here to protect this route
-// import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: Request) {
   try {
