@@ -142,7 +142,7 @@ export function BoardView() {
                                       </span>
                                       <div className="flex items-center gap-1 text-[10px] text-slate-400">
                                         <CheckSquare className="h-3 w-3 text-emerald-500/70" />
-                                        <span>{app.steps.filter(s => s.completed).length}/{app.steps.length}</span>
+                                        <span>{(app.steps || []).filter(s => s.completed).length}/{(app.steps || []).length}</span>
                                       </div>
                                     </div>
 

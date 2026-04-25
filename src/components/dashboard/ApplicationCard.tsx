@@ -261,7 +261,7 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
                 {statusLabels[application.status]}
               </span>
               <span className="hidden xs:inline">•</span>
-              <span className="whitespace-nowrap">{application.steps.filter(s => s.completed).length}/{application.steps.length} steps</span>
+              <span className="whitespace-nowrap">{(application.steps || []).filter(s => s.completed).length}/{(application.steps || []).length} steps</span>
             </div>
             <span className="whitespace-nowrap">Updated {formatDistanceToNow(new Date(application.updatedAt))}</span>
           </div>
