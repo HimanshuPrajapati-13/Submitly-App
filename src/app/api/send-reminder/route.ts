@@ -17,12 +17,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Optional: Add Authentication/Authorization checks here
-    // Verify that the person/service calling this endpoint is allowed to send emails!
-    // Example:
-    // const supabase = await createClient();
-    // const { data: { user } } = await supabase.auth.getUser();
-    // if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // 3. Add Authentication/Authorization checks
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // 4. Call our utility function to send the email
     const result = await sendEmail({ to, subject, text, html });

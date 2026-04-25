@@ -99,9 +99,13 @@ function toStep(db: DbStep, links?: StepLink[], files?: StepFile[]): Step {
 // ============ Applications ============
 
 export async function fetchApplications(): Promise<Application[]> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
   const { data, error } = await supabase
     .from('applications')
     .select('*')
+    .eq('user_id', user.id)
     .order('priority', { ascending: false });
 
   if (error) throw error;
@@ -186,19 +190,27 @@ export async function updateApplication(
   if (updates.remindersEnabled !== undefined) dbUpdates.reminders_enabled = updates.remindersEnabled;
   if (updates.customReminderDate !== undefined) dbUpdates.custom_reminder_date = updates.customReminderDate === null ? null : updates.customReminderDate;
 
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
   const { error } = await supabase
     .from('applications')
     .update(dbUpdates)
-    .eq('id', id);
+    .eq('id', id)
+    .eq('user_id', user.id);
 
   if (error) throw error;
 }
 
 export async function deleteApplication(id: string): Promise<void> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
   const { error } = await supabase
     .from('applications')
     .delete()
-    .eq('id', id);
+    .eq('id', id)
+    .eq('user_id', user.id);
 
   if (error) throw error;
 }
@@ -302,19 +314,27 @@ export async function updateStep(
   if (updates.blockedUntil !== undefined) dbUpdates.blocked_until = updates.blockedUntil;
   if (updates.completedAt !== undefined) dbUpdates.completed_at = updates.completedAt;
 
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
   const { error } = await supabase
     .from('steps')
     .update(dbUpdates)
-    .eq('id', stepId);
+    .eq('id', stepId)
+    .eq('user_id', user.id);
 
   if (error) throw error;
 }
 
 export async function deleteStep(stepId: string): Promise<void> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
   const { error } = await supabase
     .from('steps')
     .delete()
-    .eq('id', stepId);
+    .eq('id', stepId)
+    .eq('user_id', user.id);
 
   if (error) throw error;
 }
