@@ -56,9 +56,9 @@ function DashboardContent() {
           <div className="animate-fade-in-down">
             <SummaryStrip />
           </div>
-          <div className="flex items-center justify-between animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <FilterTabs />
-            <div className="flex bg-slate-900/50 p-1 rounded-lg border border-white/5 mr-4 mb-4">
+            <div className="flex bg-slate-900/50 p-1 rounded-lg border border-white/5 mx-4 md:mr-4 mb-4">
               <Button 
                 variant="ghost" 
                 size="sm" 

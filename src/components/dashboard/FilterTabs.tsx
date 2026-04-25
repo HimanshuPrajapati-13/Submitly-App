@@ -43,7 +43,7 @@ export function FilterTabs() {
   return (
     <div className="px-4 pb-4">
       <Tabs value={activeFilter} onValueChange={(v) => setActiveFilter(v as FilterTab)}>
-        <TabsList className="w-full justify-start gap-1 bg-slate-900/50 p-1 h-auto flex-wrap">
+        <TabsList className="flex items-center justify-start gap-1 bg-slate-900/50 p-1 h-auto overflow-x-auto scrollbar-hide">
           {FILTER_TABS.map((tab) => (
             <TabsTrigger
               key={tab.key}
