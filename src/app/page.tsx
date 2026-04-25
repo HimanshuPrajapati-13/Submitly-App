@@ -8,9 +8,10 @@ import { FilterTabs } from '@/components/dashboard/FilterTabs';
 import { ApplicationCard } from '@/components/dashboard/ApplicationCard';
 import { EmptyState } from '@/components/dashboard/EmptyState';
 import { BoardView } from '@/components/dashboard/BoardView';
+import { AnalyticsView } from '@/components/dashboard/AnalyticsView';
 import { NewApplicationModal } from '@/components/modals/NewApplicationModal';
 import { HydrationSafe } from '@/components/HydrationSafe';
-import { LayoutList, LayoutDashboard } from 'lucide-react';
+import { LayoutList, LayoutDashboard, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
@@ -18,7 +19,7 @@ import { cn } from '@/lib/utils';
 function DashboardContent() {
   const [isNewAppModalOpen, setIsNewAppModalOpen] = useState(false);
   const [preselectedTemplateId, setPreselectedTemplateId] = useState<string | undefined>();
-  const [viewMode, setViewMode] = useState<'list' | 'board'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'board' | 'analytics'>('list');
   const hasLoadedRef = useRef(false);
   
   const { getFilteredApplications, activeFilter, loadFromSupabase, isLoading } = useAppStore();
@@ -50,7 +51,7 @@ function DashboardContent() {
         
         <main className={cn(
           "container mx-auto px-4 py-6 transition-all duration-500",
-          viewMode === 'board' ? "max-w-7xl" : "max-w-4xl"
+          viewMode === 'board' || viewMode === 'analytics' ? "max-w-7xl" : "max-w-4xl"
         )}>
           <div className="animate-fade-in-down">
             <SummaryStrip />
@@ -82,6 +83,18 @@ function DashboardContent() {
                 <LayoutDashboard className="h-4 w-4 mr-2" />
                 Board
               </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setViewMode('analytics')}
+                className={cn(
+                  "h-8 px-3 rounded-md transition-all text-xs font-bold uppercase tracking-wider",
+                  viewMode === 'analytics' ? "bg-blue-600 text-white shadow-lg" : "text-slate-400 hover:text-white"
+                )}
+              >
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Analytics
+              </Button>
             </div>
           </div>
           
@@ -103,6 +116,10 @@ function DashboardContent() {
           ) : viewMode === 'board' ? (
             <div className="animate-fade-in-up">
               <BoardView />
+            </div>
+          ) : viewMode === 'analytics' ? (
+            <div className="animate-fade-in-up">
+              <AnalyticsView />
             </div>
           ) : (
             <div className="space-y-4 max-w-4xl mx-auto">
