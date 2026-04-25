@@ -7,14 +7,17 @@ import { SummaryStrip } from '@/components/dashboard/SummaryStrip';
 import { FilterTabs } from '@/components/dashboard/FilterTabs';
 import { ApplicationCard } from '@/components/dashboard/ApplicationCard';
 import { EmptyState } from '@/components/dashboard/EmptyState';
+import { BoardView } from '@/components/dashboard/BoardView';
 import { NewApplicationModal } from '@/components/modals/NewApplicationModal';
 import { HydrationSafe } from '@/components/HydrationSafe';
+import { LayoutList, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
 
 function DashboardContent() {
   const [isNewAppModalOpen, setIsNewAppModalOpen] = useState(false);
   const [preselectedTemplateId, setPreselectedTemplateId] = useState<string | undefined>();
+  const [viewMode, setViewMode] = useState<'list' | 'board'>('list');
   const hasLoadedRef = useRef(false);
   
   const { getFilteredApplications, activeFilter, loadFromSupabase, isLoading } = useAppStore();
@@ -44,12 +47,41 @@ function DashboardContent() {
       <div className="relative z-10">
         <TopNavBar onNewApplication={handleNewApplication} />
         
-        <main className="container mx-auto px-4 py-6 max-w-4xl">
+        <main className={cn(
+          "container mx-auto px-4 py-6 transition-all duration-500",
+          viewMode === 'board' ? "max-w-7xl" : "max-w-4xl"
+        )}>
           <div className="animate-fade-in-down">
             <SummaryStrip />
           </div>
-          <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="flex items-center justify-between animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <FilterTabs />
+            <div className="flex bg-slate-900/50 p-1 rounded-lg border border-white/5 mr-4 mb-4">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setViewMode('list')}
+                className={cn(
+                  "h-8 px-3 rounded-md transition-all text-xs font-bold uppercase tracking-wider",
+                  viewMode === 'list' ? "bg-blue-600 text-white shadow-lg" : "text-slate-400 hover:text-white"
+                )}
+              >
+                <LayoutList className="h-4 w-4 mr-2" />
+                List
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setViewMode('board')}
+                className={cn(
+                  "h-8 px-3 rounded-md transition-all text-xs font-bold uppercase tracking-wider",
+                  viewMode === 'board' ? "bg-blue-600 text-white shadow-lg" : "text-slate-400 hover:text-white"
+                )}
+              >
+                <LayoutDashboard className="h-4 w-4 mr-2" />
+                Board
+              </Button>
+            </div>
           </div>
           
           {isLoading ? (
@@ -66,6 +98,10 @@ function DashboardContent() {
                 filter={activeFilter} 
                 onNewApplication={() => handleNewApplication()} 
               />
+            </div>
+          ) : viewMode === 'board' ? (
+            <div className="animate-fade-in-up">
+              <BoardView />
             </div>
           ) : (
             <div className="space-y-4 max-w-4xl mx-auto">
