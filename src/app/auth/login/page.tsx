@@ -263,6 +263,7 @@ export default function LoginPage() {
                   required
                 />
               </div>
+            </div>
 
             <div className="space-y-2">
               <Label htmlFor="password" className="text-slate-400 text-xs font-bold uppercase tracking-wider pl-1">Password</Label>
