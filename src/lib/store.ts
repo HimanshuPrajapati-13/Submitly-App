@@ -300,6 +300,8 @@ export const useAppStore = create<AppState>()(
             status: newApp.status,
             priority: newApp.priority,
             notes: newApp.notes ?? null,
+            reminders_enabled: newApp.remindersEnabled,
+            custom_reminder_date: newApp.customReminderDate ?? null,
             created_at: newApp.createdAt,
             updated_at: newApp.updatedAt,
           });
@@ -363,10 +365,18 @@ export const useAppStore = create<AppState>()(
         // Sync to Supabase
         const app = get().applications.find(a => a.id === id);
         if (app) {
-          supabase.from('applications').update({
-            ...updates,
-            updated_at: new Date().toISOString(),
-          }).eq('id', id).then(() => {});
+          const dbUpdates: any = { updated_at: new Date().toISOString() };
+          
+          if (updates.title !== undefined) dbUpdates.title = updates.title;
+          if (updates.category !== undefined) dbUpdates.category = updates.category;
+          if (updates.deadline !== undefined) dbUpdates.deadline = updates.deadline;
+          if (updates.status !== undefined) dbUpdates.status = updates.status;
+          if (updates.priority !== undefined) dbUpdates.priority = updates.priority;
+          if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
+          if (updates.remindersEnabled !== undefined) dbUpdates.reminders_enabled = updates.remindersEnabled;
+          if (updates.customReminderDate !== undefined) dbUpdates.custom_reminder_date = updates.customReminderDate === null ? null : updates.customReminderDate;
+
+          supabase.from('applications').update(dbUpdates).eq('id', id).then(() => {});
         }
       },
       

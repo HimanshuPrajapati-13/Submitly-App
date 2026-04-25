@@ -143,24 +143,24 @@ export default function LoginPage() {
         {/* Subtle star field grain overlay could go here if needed */}
       </div>
 
-      <div className="w-full max-w-lg relative z-10 flex flex-col items-center">
+      <div className="w-full max-w-lg relative z-10 flex flex-col items-center px-4">
         
         {/* MISSION CONTROL LOGO */}
-        <div className="flex flex-col items-center gap-4 mb-8 animate-fade-in-down">
+        <div className="flex flex-col items-center gap-4 mb-8 animate-fade-in-down w-full">
           <div className="relative group">
             <div className="absolute inset-0 bg-blue-500/30 rounded-3xl blur-xl group-hover:bg-blue-400/40 transition-all duration-500" />
-            <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl clay-card bg-linear-to-br from-slate-800 to-slate-900 border-white/10 group-hover:-translate-y-1 transition-transform duration-500">
-              <Zap className="h-10 w-10 text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+            <div className="relative flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-3xl clay-card bg-linear-to-br from-slate-800 to-slate-900 border-white/10 group-hover:-translate-y-1 transition-transform duration-500">
+              <Zap className="h-8 w-8 sm:h-10 sm:w-10 text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
             </div>
           </div>
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-white tracking-tight drop-shadow-md">Submitly</h1>
-            <p className="text-blue-300/80 font-medium tracking-wide text-sm uppercase letter-spacing-2">Submit On Time</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight drop-shadow-md">Submitly</h1>
+            <p className="text-blue-300/80 font-medium tracking-wide text-[10px] sm:text-sm uppercase letter-spacing-2">Submit On Time</p>
           </div>
         </div>
 
         {/* CLAY CARD CONTAINER */}
-        <div className="clay-card w-full p-8 animate-fade-in-up">
+        <div className="clay-card w-full p-6 sm:p-8 animate-fade-in-up">
           
           {/* MODE TOGGLE - PILL SHAPE */}
           <div className="flex p-1.5 bg-slate-950/40 rounded-full mb-8 border border-white/5 relative overflow-hidden backdrop-blur-md shadow-inner">
@@ -263,7 +263,6 @@ export default function LoginPage() {
                   required
                 />
               </div>
-            </div>
 
             <div className="space-y-2">
               <Label htmlFor="password" className="text-slate-400 text-xs font-bold uppercase tracking-wider pl-1">Password</Label>

@@ -62,10 +62,10 @@ export default function AuthAboutPage() {
               <Zap className="h-10 w-10 text-white" />
             </div>
           </div>
-          <h2 className="text-4xl font-bold text-white mb-3 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
             Submitly <span className="text-blue-500">Submit On Time</span>
           </h2>
-          <p className="text-slate-400 text-lg max-w-lg mx-auto leading-relaxed">
+          <p className="text-slate-400 text-base md:text-lg max-w-lg mx-auto leading-relaxed px-4">
             The ultimate application tracker. Never miss a deadline, always know your next action.
           </p>
           <div className="mt-6 flex justify-center">

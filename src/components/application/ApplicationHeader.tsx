@@ -11,7 +11,9 @@ import {
   MoreHorizontal,
   AlertTriangle,
   Bell,
-  Loader2
+  Loader2,
+  Calendar,
+  Download
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -172,6 +174,87 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
      }
   };
 
+  const getFormattedGoogleDate = (dateString: string) => {
+    if (!dateString) return '';
+    const d = new Date(dateString);
+    const year = d.getUTCFullYear();
+    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    const hours = String(d.getUTCHours()).padStart(2, '0');
+    const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(d.getUTCSeconds()).padStart(2, '0');
+
+    // Assume the deadline event ends at the deadline
+    const end = `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
+    
+    // And starts 1 hour before
+    d.setUTCHours(d.getUTCHours() - 1);
+    const sYear = d.getUTCFullYear();
+    const sMonth = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const sDay = String(d.getUTCDate()).padStart(2, '0');
+    const sHours = String(d.getUTCHours()).padStart(2, '0');
+    const sMinutes = String(d.getUTCMinutes()).padStart(2, '0');
+    const sSeconds = String(d.getUTCSeconds()).padStart(2, '0');
+    
+    const start = `${sYear}${sMonth}${sDay}T${sHours}${sMinutes}${sSeconds}Z`;
+    
+    return `${start}/${end}`;
+  };
+
+  const handleGoogleCalendar = () => {
+    if (!application.deadline) {
+        alert("Please set a deadline first!");
+        return;
+    }
+    const dates = getFormattedGoogleDate(application.deadline);
+    const title = encodeURIComponent(`Submitly: ${application.title} Deadline`);
+    const details = encodeURIComponent(`Status: ${statusLabels[application.status]}\n\nNotes:\n${application.notes || 'No notes provided.'}`);
+    
+    window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`, '_blank');
+  };
+
+  const handleIcsDownload = () => {
+    if (!application.deadline) {
+        alert("Please set a deadline first!");
+        return;
+    }
+    const d = new Date(application.deadline);
+    
+    // Format to YYYYMMDDTHHmmssZ
+    const formatDate = (dateObj: Date) => {
+      return dateObj.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    };
+
+    const end = formatDate(d);
+    
+    const startD = new Date(d);
+    startD.setUTCHours(startD.getUTCHours() - 1);
+    const start = formatDate(startD);
+    
+    const icsContent = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'CALSCALE:GREGORIAN',
+        'BEGIN:VEVENT',
+        `DTSTART:${start}`,
+        `DTEND:${end}`,
+        `SUMMARY:Submitly: ${application.title} Deadline`,
+        `DESCRIPTION:Status: ${statusLabels[application.status]}\\nNotes: ${application.notes ? application.notes.replace(/\n/g, '\\n') : ''}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+    ].join('\r\n');
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${application.title.replace(/\s+/g, '_')}_deadline.ics`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="border-b border-white/10 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
       <div className="container mx-auto px-4 py-4 max-w-4xl">
@@ -215,9 +298,9 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
         </div>
 
         {/* Title and metadata */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-white mb-2">
+            <h1 className="text-xl md:text-2xl font-bold text-white mb-2 leading-tight">
               {application.title}
             </h1>
             <div className="flex items-center gap-3 text-sm text-slate-400">
@@ -270,10 +353,10 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3">
             {/* Status selector */}
             <Select value={application.status} onValueChange={handleStatusChange}>
-              <SelectTrigger className="w-40 bg-slate-900 border-white/10 text-white">
+              <SelectTrigger className="w-full sm:w-40 bg-slate-900 border-white/10 text-white">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-slate-900 border-white/10">
@@ -288,6 +371,37 @@ export function ApplicationHeader({ application }: ApplicationHeaderProps) {
                 ))}
               </SelectContent>
             </Select>
+
+            {/* Add to Calendar Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="default"
+                  className="rounded-full border-white/10 text-slate-300 bg-slate-900/50 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/30 transition-colors h-10 w-10 sm:h-10 sm:w-auto p-0 sm:px-3"
+                  title="Add to Calendar"
+                >
+                  <Calendar className="h-5 w-5 sm:h-4 sm:w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Add to Calendar</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-slate-900 border-white/10 w-48">
+                <DropdownMenuItem 
+                  onClick={handleGoogleCalendar}
+                  className="text-slate-200 focus:bg-white/10 cursor-pointer"
+                >
+                  <Calendar className="h-4 w-4 mr-2 text-blue-400" />
+                  Google Calendar
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={handleIcsDownload}
+                  className="text-slate-200 focus:bg-white/10 cursor-pointer"
+                >
+                  <Download className="h-4 w-4 mr-2 text-emerald-400" />
+                  Download .ics (Apple/Outlook)
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             {/* Send/Schedule Reminder Dropdown */}
             <DropdownMenu>

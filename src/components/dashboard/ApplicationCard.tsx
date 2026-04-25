@@ -250,25 +250,25 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
             </Badge>
           </div>
           
-          <div className="flex items-center gap-2 text-[10px] text-slate-500 justify-between">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-500 justify-between">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className={cn(
-                'px-1.5 py-0.5 rounded text-[9px] font-medium',
+                'px-1.5 py-0.5 rounded text-[9px] font-medium whitespace-nowrap',
                 application.status === 'SUBMITTED' ? 'bg-emerald-500/20 text-emerald-400' :
                 application.status === 'IN_PROGRESS' ? 'bg-blue-500/20 text-blue-400' :
                 'bg-slate-500/20 text-slate-400'
               )}>
                 {statusLabels[application.status]}
               </span>
-              <span>•</span>
-              <span>{application.steps.filter(s => s.completed).length}/{application.steps.length} steps</span>
+              <span className="hidden xs:inline">•</span>
+              <span className="whitespace-nowrap">{application.steps.filter(s => s.completed).length}/{application.steps.length} steps</span>
             </div>
-            <span>Updated {formatDistanceToNow(new Date(application.updatedAt))}</span>
+            <span className="whitespace-nowrap">Updated {formatDistanceToNow(new Date(application.updatedAt))}</span>
           </div>
         </div>
 
         {/* Line 4: Quick Actions */}
-        <div className="flex items-center gap-1 mt-0 pt-0">
+        <div className="flex flex-wrap items-center gap-1 mt-0 pt-0">
           <Button 
             variant="ghost" 
             size="sm" 

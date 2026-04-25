@@ -24,16 +24,16 @@ export default function AuthDeveloperPage() {
         </div>
 
         {/* Profile Section */}
-        <div className="clay-card border-0 p-8 mb-8 text-center animate-fade-in-down">
+        <div className="clay-card border-0 p-6 md:p-8 mb-8 text-center animate-fade-in-down">
           <div className="mx-auto w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500/20 mb-6 bg-slate-800 flex items-center justify-center">
             {/* Replace with actual image in production */}
             <Code2 className="h-16 w-16 text-blue-400" />
           </div>
           
-          <h2 className="text-3xl font-bold text-white mb-2">Himanshu Prajapati</h2>
-          <p className="text-blue-400 font-medium mb-6">Full Stack Developer & Human</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Himanshu Prajapati</h2>
+          <p className="text-blue-400 font-medium mb-6 text-sm md:text-base">Full Stack Developer & Human</p>
           
-          <p className="text-slate-400 max-w-lg mx-auto leading-relaxed mb-8">
+          <p className="text-slate-400 max-w-lg mx-auto leading-relaxed mb-8 text-sm md:text-base px-2">
             Passionate about building tools that solve real-world problems. 
             Created Submitly to help students and professionals manage the chaos 
             of multiple high-stakes applications.
@@ -65,7 +65,7 @@ export default function AuthDeveloperPage() {
         </div>
 
         {/* Tech Stack */}
-        <div className="clay-card border-0 p-8 mb-8 animate-fade-in-up">
+        <div className="clay-card border-0 p-6 md:p-8 mb-8 animate-fade-in-up">
           <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
             <Zap className="h-5 w-5 text-amber-400" />
             Built With

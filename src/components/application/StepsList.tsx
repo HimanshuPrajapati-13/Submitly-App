@@ -497,12 +497,12 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-2 pt-2 border-t border-white/10">
+                    <div className="flex flex-wrap gap-2 pt-2 border-t border-white/10">
                       <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => handleToggleBlock(step)}
-                        className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10"
+                        className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 h-8 px-2 text-xs"
                       >
                         {step.blockedBy ? (
                           <>
@@ -512,7 +512,7 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                         ) : (
                           <>
                             <Lock className="h-3 w-3 mr-1" />
-                            Mark Blocked
+                            <span className="inline">Mark Blocked</span>
                           </>
                         )}
                       </Button>
@@ -524,7 +524,7 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                           setEditStepTitle(step.title);
                           setEditStepTime(step.estimatedMinutes ? String(step.estimatedMinutes) : '');
                         }}
-                        className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
+                        className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-8 px-2 text-xs"
                       >
                         <Pencil className="h-3 w-3 mr-1" />
                         Edit
@@ -537,7 +537,7 @@ export function StepsList({ applicationId, steps }: StepsListProps) {
                             deleteStep(step.id);
                           }
                         }}
-                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-8 px-2 text-xs ml-auto sm:ml-0"
                       >
                         <Trash2 className="h-3 w-3 mr-1" />
                         Delete

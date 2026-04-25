@@ -65,7 +65,7 @@ export function TopNavBar({ onNewApplication }: TopNavBarProps) {
           </div>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar (Desktop) */}
         <div className="relative mx-4 flex-1 max-w-md hidden md:block">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <Input
@@ -73,12 +73,16 @@ export function TopNavBar({ onNewApplication }: TopNavBarProps) {
             placeholder="Search applications... (⌘K)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full input-glass pl-10 h-10 text-sm focus:border-blue-500/50"
+            className="w-full input-glass pl-10 h-10 text-sm focus:border-blue-500/50 text-white"
           />
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
+          {/* Mobile Search Button */}
+          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/5 rounded-full md:hidden">
+            <Search className="h-5 w-5" />
+          </Button>
           {/* Templates Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
