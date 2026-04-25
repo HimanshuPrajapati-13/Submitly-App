@@ -13,6 +13,7 @@ import { HydrationSafe } from '@/components/HydrationSafe';
 import { LayoutList, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
+import { cn } from '@/lib/utils';
 
 function DashboardContent() {
   const [isNewAppModalOpen, setIsNewAppModalOpen] = useState(false);
